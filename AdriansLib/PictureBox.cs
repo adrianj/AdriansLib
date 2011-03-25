@@ -117,7 +117,6 @@ namespace AdriansLib
             // OuterPanel
             // 
             this.OuterPanel.AutoScroll = true;
-            this.OuterPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.OuterPanel.ContextMenuStrip = this.contextMenuStrip;
             this.OuterPanel.Controls.Add(this.PicBox);
             this.OuterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -208,6 +207,7 @@ namespace AdriansLib
 			}
 		}
 
+        /*
 		/// <summary>
 		/// Set the frametype of the picturbox
 		/// </summary>
@@ -217,6 +217,7 @@ namespace AdriansLib
 			get { return OuterPanel.BorderStyle; }
 			set { OuterPanel.BorderStyle = value; }
 		}
+         */
 
 		#endregion
 
@@ -243,14 +244,18 @@ namespace AdriansLib
 		/// </summary>
 		private void RedCross ()
 		{
+            /*
 			Bitmap bmp = new Bitmap ( OuterPanel.Width, OuterPanel.Height, System.Drawing.Imaging.PixelFormat.Format16bppRgb555 );
+            
 			Graphics gr;
 			gr = Graphics.FromImage ( bmp );
 			Pen pencil = new Pen ( Color.Red, 5 );
 			gr.DrawLine ( pencil, 0, 0, OuterPanel.Width, OuterPanel.Height );
 			gr.DrawLine ( pencil, 0, OuterPanel.Height, OuterPanel.Width, 0  );
-			PicBox.Image = bmp;
 			gr.Dispose ();
+             
+            PicBox.Image = bmp;
+            */
 		}
 
 		#endregion
