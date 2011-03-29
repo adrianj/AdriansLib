@@ -57,10 +57,16 @@
     <Compile Include="PictureBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ProgressBarControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProgressBarControl.designer.cs">
+      <DependentUpon>ProgressBarControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProgressBarForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProgressBarForm.designer.cs">
+    <Compile Include="ProgressBarForm.Designer.cs">
       <DependentUpon>ProgressBarForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,6 +86,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PictureBox.resx">
       <DependentUpon>PictureBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressBarControl.resx">
+      <DependentUpon>ProgressBarControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProgressBarForm.resx">
       <DependentUpon>ProgressBarForm.cs</DependentUpon>
