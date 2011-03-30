@@ -16,6 +16,7 @@ namespace AdriansLib
     {
         public new DialogResult DialogResult { get { return progBar.DialogResult; } }
         public object Result { get { return progBar.Result; } }
+        public bool CanCancel { get { return progBar.CanCancel; } set { progBar.CanCancel = value; } }
         public bool EnableTextBox
         {
             get { return progBar.EnableTextBox; }
@@ -51,13 +52,15 @@ namespace AdriansLib
         public void StartWorker(WorkerFunction function) { StartWorker(function, null); }
         public void StartWorker(WorkerFunction function, object parameter) { 
             progBar.StartWorker(function, parameter);
-            Application.Run(this);
+            //Application.Run(this);
+            this.ShowDialog();
         }
 
         public event RunWorkerCompletedEventHandler RunWorkerCompleted;
         private void progBar_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            RunWorkerCompleted(sender, e);
+            if(RunWorkerCompleted != null)
+                RunWorkerCompleted(sender, e);
             this.Dispose();
         }
 

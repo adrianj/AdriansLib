@@ -15,7 +15,7 @@ namespace AdriansLib
     /// Typical pattern is: 
     /// 1. Create instance of ProgressBarForm
     /// 2. Call form.StartWorker([function matching delegate],[parameter is optional])
-    /// 3. Function does its thing, then eventually form.Cancelled and form.Result are available.
+    /// 3. Function does its thing, then eventually form.DialogResult and form.Result are available.
     /// Meanwhile, the function can report progress using e.ReportProgress and should be polling worker.CancellationPending
     /// </summary>
     /// <param name="parameter">Function input. Can be anything.</param>
@@ -46,6 +46,7 @@ namespace AdriansLib
         public int Value { get { return progressBar.Value; } set { progressBar.Value = value; } }
         public DialogResult DialogResult {get;set;}
         public object Result { get; set; }
+        public bool CanCancel { get { return cancelButton.Enabled; } set { cancelButton.Enabled = value; } }
 
         public bool EnableTextBox
         {
@@ -74,7 +75,7 @@ namespace AdriansLib
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            if (backgroundWorker1.IsBusy)
+            if (backgroundWorker1.IsBusy && CanCancel)
             {
                 backgroundWorker1.CancelAsync();
             }
