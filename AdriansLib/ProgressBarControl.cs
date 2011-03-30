@@ -28,7 +28,7 @@ namespace AdriansLib
     {
         public ProgressBarControl()
         {
-            this.Cancelled = false;
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Result = null;
             InitializeComponent();
         }
@@ -44,7 +44,7 @@ namespace AdriansLib
         public int Minimum { get { return progressBar.Minimum; } set { progressBar.Minimum = value; } }
         public int Maximum { get { return progressBar.Maximum; } set { progressBar.Maximum = value; } }
         public int Value { get { return progressBar.Value; } set { progressBar.Value = value; } }
-        public bool Cancelled { get; set; }
+        public DialogResult DialogResult {get;set;}
         public object Result { get; set; }
 
         public bool EnableTextBox
@@ -74,7 +74,36 @@ namespace AdriansLib
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            backgroundWorker1.CancelAsync();
+            if (backgroundWorker1.IsBusy)
+            {
+                backgroundWorker1.CancelAsync();
+            }
+            if (ButtonClick != null)
+                ButtonClick(sender, e);
+        }
+
+        // pretty much, if busy then button is cancel, otherwise it's ok, which can be used however.
+        public delegate void setBusyCallback(bool busy);
+        private void setBusy(bool busy)
+        {
+            if(cancelButton.InvokeRequired)
+            {
+                setBusyCallback d = new setBusyCallback(setBusy);
+                this.Invoke(d, new object[] { busy });
+            }
+            else
+            {
+                if (!busy)
+                {
+                    progressBar.Cursor = Cursors.Default;
+                    cancelButton.Text = "Ok";
+                }
+                else
+                {
+                    progressBar.Cursor = Cursors.WaitCursor;
+                    cancelButton.Text = "Cancel";
+                }
+            }
         }
 
 
@@ -90,6 +119,7 @@ namespace AdriansLib
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = (BackgroundWorker)sender;
+            setBusy(true);
             e.Result = mFunction(e.Argument, worker, e);
         }
 
@@ -105,118 +135,34 @@ namespace AdriansLib
                 this.progressBar.Value = e.ProgressPercentage;
             else
                 this.progressBar.Value = this.Maximum;
-            ProgressChanged(sender, e);
+            if(ProgressChanged != null)
+                ProgressChanged(sender, e);
         }
 
         public event RunWorkerCompletedEventHandler RunWorkerCompleted;
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+            setBusy(false);
             if (e.Cancelled)
             {
-                this.Cancelled = true;
+                this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                this.Result = null;
             }
             else
             {
+                this.DialogResult = DialogResult.OK;
                 this.Result = e.Result;
-                this.progressBar.Value = this.Maximum;
+                //this.progressBar.Value = this.Maximum;
             }
-            RunWorkerCompleted(sender, e);
-            this.Dispose();
+            if(RunWorkerCompleted != null)
+                RunWorkerCompleted(sender, e);
         }
-    }
 
+        public event EventHandler ButtonClick;
+    }
 
     /*
-    /// <summary>
-    /// A Progress Bar that operates independently in its own thread.
-    /// </summary>
-    public class ProgressBarThread
-    {
-        public string Title { get; set;}
-        public long ExpectedTimeToComplete { get; set;}
-        //private bool mEndThread = false;
-        //public bool EndThread { get { return mEndThread; } set { mEndThread = value; } }
-        public Thread ActualThread { get; set; }
-        private ProgressBarForm progForm;
-
-        public ProgressBarThread(string title, long expectedTimeToComplete)
-        {
-            Title = title;
-            ExpectedTimeToComplete = expectedTimeToComplete;
-            ActualThread = new Thread(this.ThreadMain);
-            ActualThread.Start();
-        }
-
-        public void ProgressEventHandler(object sender, ProgressEventArgs e)
-        {
-            Console.WriteLine("Thread Event! '"+e.Code+","+this.ExpectedTimeToComplete+","+progForm.InvokeRequired);
-            if (progForm.InvokeRequired)
-            {
-                Console.WriteLine("1");
-                AdriansLib.ProgressEventHandler d = new AdriansLib.ProgressEventHandler(this.ProgressEventHandler);
-                Console.WriteLine("2");
-               
-                Console.WriteLine("3");
-            }
-            else progForm.ProgressEventHandler(sender, e);
-        }
-
-
-        public void ThreadMain()
-        {
-            long time = 0;
-            int interval = 1;
-            progForm = new ProgressBarForm(Title);
-            Thread.Sleep(0);
-
-            progForm.Maximum = 1000;
-            if (ExpectedTimeToComplete > 0)
-            {
-                if (ExpectedTimeToComplete <= 1000)
-                {
-                    progForm.Maximum = (int)ExpectedTimeToComplete;
-                }
-                else
-                {
-                    interval = (int)ExpectedTimeToComplete / 1000;
-                }
-            }
-            // else : Event driven. intervals are meaningless.
-            progForm.Show();
-
-            if (ExpectedTimeToComplete > 0)
-            {
-                while (time < ExpectedTimeToComplete && !progForm.Complete)
-                {
-                    progForm.Increment(1);
-                    progForm.Activate();
-                    Thread.Sleep(interval);
-                    time += interval;
-                }
-            }
-            else
-            {
-                while (!progForm.Complete) { 
-                    Thread.Sleep(1000);
-                    Console.WriteLine("sleeping...");
-                } // Relying on a ProgressEvent to set EndThread = true.
-            }
-
-            progForm.Close();
-            this.Close();
-        }
-
-        public void Close()
-        {
-            if(progForm != null)
-                progForm.Complete = true;
-        }
-        
-    }
-     */
-
     public delegate void ProgressEventHandler(object sender, ProgressEventArgs e);
 
     /// <summary>
@@ -256,6 +202,7 @@ namespace AdriansLib
         }
 
     }
-     
+    
+     */
 
 }

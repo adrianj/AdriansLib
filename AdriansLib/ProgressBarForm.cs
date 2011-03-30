@@ -14,17 +14,34 @@ namespace AdriansLib
     /// </summary>
     public partial class ProgressBarForm : Form
     {
-        public bool Cancelled { get { return progBar.Cancelled; } }
+        public new DialogResult DialogResult { get { return progBar.DialogResult; } }
         public object Result { get { return progBar.Result; } }
-
-        public ProgressBarForm(string title, int maximum)
+        public bool EnableTextBox
+        {
+            get { return progBar.EnableTextBox; }
+            set
+            {
+                progBar.EnableTextBox = value;
+                if (value)
+                {
+                    this.Height = 180;
+                }
+                else
+                {
+                    this.Height = 80;
+                }
+            }
+        }
+        public ProgressBarForm(string title) : this(title,false) { }
+        public ProgressBarForm(string title, bool enableTextBox) : this(title, 100,enableTextBox) { }
+        public ProgressBarForm(string title, int maximum) : this(title, maximum,false) { }
+        public ProgressBarForm(string title, int maximum, bool enableTextbox)
             : this()
         {
             this.Text = title;
+            this.EnableTextBox = enableTextbox;
             progBar.Maximum = maximum;
         }
-        public ProgressBarForm(string title) : this(title, 100) { }
-        public ProgressBarForm(int maximum) : this("Progress", maximum) { }
         public ProgressBarForm()
         {
             InitializeComponent();
@@ -37,8 +54,10 @@ namespace AdriansLib
             Application.Run(this);
         }
 
+        public event RunWorkerCompletedEventHandler RunWorkerCompleted;
         private void progBar_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            RunWorkerCompleted(sender, e);
             this.Dispose();
         }
 

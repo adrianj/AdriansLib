@@ -41,8 +41,8 @@
             this.progressBar.Location = new System.Drawing.Point(0, 0);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(378, 49);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 0;
-            this.progressBar.UseWaitCursor = true;
             // 
             // cancelButton
             // 
@@ -51,22 +51,21 @@
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(61, 49);
             this.cancelButton.TabIndex = 1;
-            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Text = "Ok";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // infoBox
             // 
-            this.infoBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.infoBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.infoBox.Location = new System.Drawing.Point(0, 55);
+            this.infoBox.Location = new System.Drawing.Point(0, 53);
             this.infoBox.Multiline = true;
             this.infoBox.Name = "infoBox";
             this.infoBox.ReadOnly = true;
-            this.infoBox.Size = new System.Drawing.Size(445, 47);
+            this.infoBox.Size = new System.Drawing.Size(445, 53);
             this.infoBox.TabIndex = 2;
-            this.infoBox.UseWaitCursor = true;
-            this.infoBox.Visible = false;
             // 
             // backgroundWorker1
             // 
@@ -85,7 +84,7 @@
             this.Controls.Add(this.progressBar);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Name = "ProgressBarControl";
-            this.Size = new System.Drawing.Size(445, 50);
+            this.Size = new System.Drawing.Size(445, 109);
             this.ResumeLayout(false);
             this.PerformLayout();
 
