@@ -17,6 +17,8 @@ namespace AdriansLib
         public new DialogResult DialogResult { get { return progBar.DialogResult; } }
         public object Result { get { return progBar.Result; } }
         public bool CanCancel { get { return progBar.CanCancel; } set { progBar.CanCancel = value; } }
+        public int ButtonWidth { get { return progBar.ButtonWidth; } set { progBar.ButtonWidth = value; } }
+        public string InfoText { get { return progBar.Text; } set { progBar.Text = value; } }
         public bool EnableTextBox
         {
             get { return progBar.EnableTextBox; }
@@ -60,7 +62,7 @@ namespace AdriansLib
         private void progBar_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if(RunWorkerCompleted != null)
-                RunWorkerCompleted(sender, e);
+                RunWorkerCompleted(this, e);
             this.Dispose();
         }
 

@@ -48,6 +48,23 @@ namespace AdriansLib
         public object Result { get; set; }
         public bool CanCancel { get { return cancelButton.Enabled; } set { cancelButton.Enabled = value; } }
 
+        public int ButtonWidth
+        {
+            get { return cancelButton.Width; }
+            set
+            {
+                // changing button width does so at expense of progress bar.
+                if (value > this.Width || value <= 0) return; // this would completely remove progressbar!
+                int prevLoc = cancelButton.Location.X;
+                int newLoc = prevLoc + cancelButton.Width - value;
+                progressBar.Width = progressBar.Width - value + cancelButton.Width;
+                cancelButton.Location = new Point(newLoc, cancelButton.Location.Y);
+                cancelButton.Width = value;
+            }
+        }
+
+        public string Text { get { return infoBox.Text; } set { infoBox.Text = value; } }
+
         public bool EnableTextBox
         {
             get
@@ -73,6 +90,7 @@ namespace AdriansLib
                 progressBar.Increment(value);
         }
 
+        public event EventHandler ButtonClick;
         private void cancelButton_Click(object sender, EventArgs e)
         {
             if (backgroundWorker1.IsBusy && CanCancel)
@@ -80,7 +98,7 @@ namespace AdriansLib
                 backgroundWorker1.CancelAsync();
             }
             if (ButtonClick != null)
-                ButtonClick(sender, e);
+                ButtonClick(this, e);
         }
 
         // pretty much, if busy then button is cancel, otherwise it's ok, which can be used however.
@@ -137,7 +155,7 @@ namespace AdriansLib
             else
                 this.progressBar.Value = this.Maximum;
             if(ProgressChanged != null)
-                ProgressChanged(sender, e);
+                ProgressChanged(this, e);
         }
 
         public event RunWorkerCompletedEventHandler RunWorkerCompleted;
@@ -157,10 +175,9 @@ namespace AdriansLib
                 //this.progressBar.Value = this.Maximum;
             }
             if(RunWorkerCompleted != null)
-                RunWorkerCompleted(sender, e);
+                RunWorkerCompleted(this, e);
         }
 
-        public event EventHandler ButtonClick;
     }
 
     /*

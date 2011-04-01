@@ -46,6 +46,7 @@ namespace AdriansLibClient
             {
                 prog.RunWorkerCompleted += new RunWorkerCompletedEventHandler(prog_RunWorkerCompleted);
                 MessageBox.Show("Will start progress bar with text box. Wait 2 seconds. Do not click Cancel");
+                prog.ButtonWidth += 30;
                 prog.StartWorker(Operation, expectedResult);
                 if (expectedDialogResult != prog.DialogResult) Console.WriteLine("Failure: " + (++failures)); tests++;
                 if (eventCount != 1) Console.WriteLine("Failure: " + (++failures)); tests++;
