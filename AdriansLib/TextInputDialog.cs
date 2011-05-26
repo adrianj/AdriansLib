@@ -10,7 +10,7 @@ namespace AdriansLib
 {
     public partial class TextInputDialog : Form
     {
-        public static int PixelsPerField = 40;
+        public static int PixelsPerField = 42;
 
         public string ResultString { get { 
             if(isCombo[0]) return ""+comboBox[0].SelectedItem;
@@ -75,7 +75,13 @@ namespace AdriansLib
                     textBox[i].Enabled = false;
                 }
                 queryLabel[i].Text = query[i];
+                comboBox[i].Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                textBox[i].Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
             }
+            textBox[query.Length - 1].Multiline = true;
+            textBox[query.Length - 1].Anchor = textBox[query.Length - 1].Anchor | AnchorStyles.Bottom;
+            cancelButton.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+            okButton.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
         }
 
         private void okButton_Click(object sender, EventArgs e)

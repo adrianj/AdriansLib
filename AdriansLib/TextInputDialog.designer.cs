@@ -68,7 +68,7 @@ namespace AdriansLib
                 // 
                 // textBox
                 // 
-                this.textBox[i].Location = new System.Drawing.Point(12, 25+PixelsPerField*i);
+                this.textBox[i].Location = new System.Drawing.Point(12, 26+PixelsPerField*i);
                 this.textBox[i].Name = "textBox";
                 this.textBox[i].Size = new System.Drawing.Size(176, 20);
                 this.textBox[i].TabIndex = 0;
@@ -86,7 +86,7 @@ namespace AdriansLib
                 // 
                 this.comboBox[i].Enabled = false;
                 this.comboBox[i].FormattingEnabled = true;
-                this.comboBox[i].Location = new System.Drawing.Point(12, 25 + PixelsPerField * i);
+                this.comboBox[i].Location = new System.Drawing.Point(12, 26 + PixelsPerField * i);
                 this.comboBox[i].Name = "comboBox";
                 this.comboBox[i].Size = new System.Drawing.Size(176, 21);
                 this.comboBox[i].TabIndex = 4;
