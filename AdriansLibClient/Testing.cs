@@ -16,7 +16,7 @@ namespace AdriansLibClient
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
+            
             int tests = Tester.RunTests(args);
             if (tests >= 0)
             {
@@ -43,8 +43,8 @@ namespace AdriansLibClient
 
         public int TestAboutBox()
         {
-            About ab = new About();
-            ab.ShowDialog();
+            About.CheckDependencies();
+            About.ShowAboutDialog();
             return 0;
         }
 

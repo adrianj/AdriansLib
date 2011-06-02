@@ -11,6 +11,25 @@ namespace AdriansLib
 {
     public partial class About : Form
     {
+        public static void ShowAboutDialog()
+        {
+            Application.EnableVisualStyles();
+            About ab = new About();
+            ab.ShowDialog();
+        }
+
+        public static bool CheckDependencies()
+        {
+            try
+            {
+                BuildDependentAssemblyList(Assembly.GetEntryAssembly().FullName, null, null);
+            }
+            catch (FileNotFoundException e) {
+                MessageBox.Show("Dependency Check Failed to find:\n\n" + e.FileName); return false; 
+            }
+            return true;
+        }
+
         public About()
         {
             InitializeComponent();
@@ -81,11 +100,12 @@ namespace AdriansLib
 
         private void populateDependencies()
         {
-            string [] SystemPrefixes = new string[]{"System","mscorlib","Accessibility"};
-            Assembly[] deps = BuildDependentAssemblyList("C:\\Users\\adrianj\\Documents\\Visual Studio 2010\\Projects\\AdriansLib\\AdriansLibClient\\bin\\Debug\\AdriansLibClient.exe", null,null);
+            string [] SystemPrefixes = new string[]{"System","mscorlib","Accessibility","Microsoft"};
+
+            Assembly[] deps = BuildDependentAssemblyList(getAss().FullName, null,null);
             foreach (Assembly a in deps)
             {
-                Console.WriteLine("" + a);
+                //Console.WriteLine("" + a);
                 string filename = Path.GetFileName(a.Location);
                 AssemblyName an = new AssemblyName(a.FullName);
                 ListViewItem lvi = new ListViewItem(new string[] { filename, ""+an.Version });
