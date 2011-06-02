@@ -22,10 +22,18 @@ namespace AdriansLib
         {
             try
             {
-                BuildDependentAssemblyList(Assembly.GetEntryAssembly().FullName, null, null);
+                List<string> missingPaths = new List<string>();
+                BuildDependentAssemblyList(Assembly.GetEntryAssembly().FullName, null, null,missingPaths);
+                if (missingPaths.Count > 0)
+                {
+                    string s = "";
+                    foreach (string path in missingPaths) s += Environment.NewLine + path;
+                    MessageBox.Show("Dependency Check Failed to find:\n" + s);
+                    return false;
+                }
             }
-            catch (FileNotFoundException e) {
-                MessageBox.Show("Dependency Check Failed to find:\n\n" + e.FileName); return false; 
+            catch (Exception e) {
+                MessageBox.Show("Unexpected exception with dependency check.\n\n"+e); return false; 
             }
             return true;
         }
@@ -48,13 +56,15 @@ namespace AdriansLib
         }
 
         public static Assembly[] BuildDependentAssemblyList(string path,
-                                                List<string> assemblies, List<Assembly> asses)
+                                                List<string> assemblies, List<Assembly> asses, List<string> missingPaths)
         {
             // Maintain a list of assemblies the original one needs.
             if (assemblies == null)
                 assemblies = new List<string>();
             if (asses == null)
                 asses = new List<Assembly>();
+            if (missingPaths == null)
+                missingPaths = new List<string>();
 
             // Have we already seen this one?
             if (assemblies.Contains(path) == true)
@@ -71,16 +81,27 @@ namespace AdriansLib
             else
             {
                 // Try as assembly name.
-                asm = Assembly.ReflectionOnlyLoad(path);
+                try
+                {
+                    asm = Assembly.ReflectionOnlyLoad(path);
+                }
+                catch (FileNotFoundException)
+                {
+                    missingPaths.Add(path);
+                    return null;
+                }
             }
 
             // Add the assembly to the list.
             if (asm != null)
             {
-                //AssemblyName an = new AssemblyName(asm.FullName);
-                //Console.WriteLine(Path.GetFileName(asm.Location) + "," + an.Version);
                 assemblies.Add(path);
                 asses.Add(asm);
+            }
+            else
+            {
+                missingPaths.Add(path);
+                return null;
             }
             // Get the referenced assemblies.
             AssemblyName[] imports = asm.GetReferencedAssemblies();
@@ -90,7 +111,7 @@ namespace AdriansLib
             {
                 // Now recursively call this assembly to get the new modules
                 // it references.
-                BuildDependentAssemblyList(asmName.FullName, assemblies,asses);
+                BuildDependentAssemblyList(asmName.FullName, assemblies,asses,missingPaths);
             }
 
             Assembly[] temp = new Assembly[asses.Count];
@@ -102,12 +123,13 @@ namespace AdriansLib
         {
             string [] SystemPrefixes = new string[]{"System","mscorlib","Accessibility","Microsoft"};
 
-            Assembly[] deps = BuildDependentAssemblyList(getAss().FullName, null,null);
+            Assembly[] deps = BuildDependentAssemblyList(getAss().FullName, null,null,null);
             foreach (Assembly a in deps)
             {
                 //Console.WriteLine("" + a);
                 string filename = Path.GetFileName(a.Location);
                 AssemblyName an = new AssemblyName(a.FullName);
+                if (an.FullName.Equals(getAss().FullName)) continue;
                 ListViewItem lvi = new ListViewItem(new string[] { filename, ""+an.Version });
                 dependencyList.Items.Add(lvi);
                 bool system = false;
