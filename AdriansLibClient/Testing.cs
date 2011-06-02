@@ -16,10 +16,13 @@ namespace AdriansLibClient
         [STAThread]
         static void Main(string[] args)
         {
-            Tester.RunTests(args);
-
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
+            Application.EnableVisualStyles();
+            int tests = Tester.RunTests(args);
+            if (tests >= 0)
+            {
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadKey();
+            }
         }
     }
 
@@ -27,13 +30,23 @@ namespace AdriansLibClient
     {
         public int RunTests()
         {
+            if (MessageBox.Show("Do you wish to test?", "test?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) return -1;
+            
             int failures = 0;
-            failures += TestBackground();
+            failures += TestAboutBox();
+            //failures += TestBackground();
 
             return failures;
         }
 
         private int eventCount = 0;
+
+        public int TestAboutBox()
+        {
+            About ab = new About();
+            ab.ShowDialog();
+            return 0;
+        }
 
         public int TestBackground()
         {
