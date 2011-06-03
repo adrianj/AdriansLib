@@ -13,27 +13,41 @@ namespace AdriansLibClient
 {
     class Testing
     {
-        [STAThread]
+        [STAThreadAttribute]
         static void Main(string[] args)
         {
-            
+            Application.DoEvents();
+            Application.EnableVisualStyles();
+            Application.Run(new TestForm());
+            /*
             int tests = Tester.RunTests(args);
             if (tests >= 0)
             {
                 Console.WriteLine("Press any key to exit...");
                 Console.ReadKey();
             }
+             */
         }
     }
+
+    public class Test_AboutBox : ITestClass
+    {
+        public int RunTests()
+        {
+            About.CheckDependencies();
+            About.ShowAboutDialog();
+            return 0;
+        }
+    }
+
 
     public class Test_ProgressBarForm : ITestClass
     {
         public int RunTests()
         {
             if (MessageBox.Show("Do you wish to test?", "test?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) return -1;
-            
+
             int failures = 0;
-            failures += TestAboutBox();
             //failures += TestBackground();
 
             return failures;
@@ -41,12 +55,6 @@ namespace AdriansLibClient
 
         private int eventCount = 0;
 
-        public int TestAboutBox()
-        {
-            About.CheckDependencies();
-            About.ShowAboutDialog();
-            return 0;
-        }
 
         public int TestBackground()
         {

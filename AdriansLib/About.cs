@@ -121,20 +121,21 @@ namespace AdriansLib
 
         private void populateDependencies()
         {
-            string [] SystemPrefixes = new string[]{"System","mscorlib","Accessibility","Microsoft"};
+            string [] SystemPrefixes = new string[]{"C:\\Windows"};
 
             Assembly[] deps = BuildDependentAssemblyList(getAss().FullName, null,null,null);
             foreach (Assembly a in deps)
             {
                 //Console.WriteLine("" + a);
                 string filename = Path.GetFileName(a.Location);
+                string path = Path.GetDirectoryName(a.Location);
                 AssemblyName an = new AssemblyName(a.FullName);
                 if (an.FullName.Equals(getAss().FullName)) continue;
-                ListViewItem lvi = new ListViewItem(new string[] { filename, ""+an.Version });
+                ListViewItem lvi = new ListViewItem(new string[] { filename, ""+an.Version,path });
                 dependencyList.Items.Add(lvi);
                 bool system = false;
                 foreach (string s in SystemPrefixes)
-                    if (filename.Length >= s.Length && filename.Substring(0, s.Length).Equals(s, StringComparison.InvariantCultureIgnoreCase))
+                    if (path.Length >= s.Length && path.Substring(0, s.Length).Equals(s, StringComparison.InvariantCultureIgnoreCase))
                         system = true;
                 if(!system)
                     dependencyList.Groups[0].Items.Add(lvi);
