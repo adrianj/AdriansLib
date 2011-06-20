@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 
-namespace AdriansLib
+namespace DTALib
 {
     /// <summary>
     /// This is the pattern for any functions to be rnu by the background worker of ProgressBarForm.
@@ -63,7 +63,7 @@ namespace AdriansLib
             }
         }
 
-        public string Text { get { return infoBox.Text; } set { infoBox.Text = value; } }
+        public override string Text { get { return infoBox.Text; } set { infoBox.Text = value; } }
 
         public bool EnableTextBox
         {

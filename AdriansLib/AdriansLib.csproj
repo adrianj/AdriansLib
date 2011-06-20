@@ -8,8 +8,8 @@
     <ProjectGuid>{35460A36-4E2A-4086-AF04-565123EB6F22}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AdriansLib</RootNamespace>
-    <AssemblyName>AdriansLib</AssemblyName>
+    <RootNamespace>DTALib</RootNamespace>
+    <AssemblyName>DTALib</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -66,6 +66,12 @@
     <Compile Include="ImageGrid.designer.cs">
       <DependentUpon>ImageGrid.cs</DependentUpon>
     </Compile>
+    <Compile Include="ListViewEditable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ListViewEditable.Designer.cs">
+      <DependentUpon>ListViewEditable.cs</DependentUpon>
+    </Compile>
     <Compile Include="PictureBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -82,6 +88,8 @@
       <DependentUpon>ProgressBarForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyParser.cs" />
+    <Compile Include="TabControlHelper.cs" />
     <Compile Include="Tester.cs" />
     <Compile Include="TestForm.cs">
       <SubType>Form</SubType>

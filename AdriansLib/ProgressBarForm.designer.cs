@@ -1,4 +1,4 @@
-﻿namespace AdriansLib
+﻿namespace DTALib
 {
     partial class ProgressBarForm
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.progBar = new AdriansLib.ProgressBarControl();
+            this.progBar = new DTALib.ProgressBarControl();
             this.SuspendLayout();
             // 
             // progBar

@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AdriansLibClient
+namespace DTALibClient
 {
-    public partial class Test_DraggableForm : UserControl, AdriansLib.ITestClass
+    public partial class Test_DraggableForm : UserControl, DTALib.ITestClass
     {
 
         public int RunTests()
         {
-            AdriansLib.DraggableForm.ShowForm(textBox);
+            DTALib.DraggableForm.ShowForm(textBox);
             return 0;
         }
 

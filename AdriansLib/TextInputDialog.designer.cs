@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace AdriansLib
+namespace DTALib
 {
     partial class TextInputDialog
     {

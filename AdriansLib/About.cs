@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.IO;
 
-namespace AdriansLib
+namespace DTALib
 {
     public partial class About : Form
     {

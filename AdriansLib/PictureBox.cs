@@ -39,7 +39,7 @@ using System.Windows.Forms;
 
 #endregion
 
-namespace AdriansLib
+namespace DTALib
 {
 	/// <summary>
 	/// Summary for the PictureBox Ctrl
@@ -194,7 +194,7 @@ namespace AdriansLib
 							PicBox.Image = Image.FromFile ( value );
 							m_sPicName = value;
 						}
-						catch ( OutOfMemoryException ex )
+						catch ( OutOfMemoryException)
 						{
 							RedCross ();
 						}

@@ -6,7 +6,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AdriansLib
+namespace DTALib
 {
     /// <summary>
     /// A control for displaying a 2Dimensional grid of images.

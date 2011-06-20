@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.Collections;
 
-namespace AdriansLib
+namespace DTALib
 {
     /// <summary>
     /// A control for showing an object and all it's public properties.

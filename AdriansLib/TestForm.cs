@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
 
-namespace AdriansLib
+namespace DTALib
 {
     public partial class TestForm : Form
     {

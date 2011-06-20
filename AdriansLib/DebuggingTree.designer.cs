@@ -1,4 +1,4 @@
-﻿namespace AdriansLib
+﻿namespace DTALib
 {
     partial class DebuggingTree
     {
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.debugTreeView = new AdriansLib.TreeViewWithoutTooltips();
+            this.debugTreeView = new DTALib.TreeViewWithoutTooltips();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.rootLabel = new System.Windows.Forms.Label();
             this.splitContainer.Panel1.SuspendLayout();

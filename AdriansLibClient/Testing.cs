@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AdriansLib;
+using DTALib;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Collections;
 using System.ComponentModel;
 using System.Threading;
 
-namespace AdriansLibClient
+namespace DTALibClient
 {
     class Testing
     {

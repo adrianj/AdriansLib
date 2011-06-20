@@ -1,4 +1,4 @@
-﻿namespace AdriansLibClient
+﻿namespace DTALibClient
 {
     partial class Test_DraggableForm
     {

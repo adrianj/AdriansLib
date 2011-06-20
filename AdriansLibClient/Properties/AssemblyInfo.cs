@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AdriansLibClient")]
-[assembly: AssemblyDescription("Client for testing AdriansLib")]
+[assembly: AssemblyTitle("DTALibClient")]
+[assembly: AssemblyDescription("Client for testing DTALib")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("NZDF Defence Technology Agency")]
-[assembly: AssemblyProduct("AdriansLibClient")]
+[assembly: AssemblyProduct("DTALibClient")]
 [assembly: AssemblyCopyright("Copyright © 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

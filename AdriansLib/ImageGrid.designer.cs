@@ -1,4 +1,4 @@
-﻿namespace AdriansLib
+﻿namespace DTALib
 {
     partial class ImageGrid
     {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AdriansLib
+namespace DTALib
 {
     /// <summary>
     /// A class that wraps around the progressBarControl.
