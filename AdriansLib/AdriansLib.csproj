@@ -60,6 +60,12 @@
     <Compile Include="DraggableForm.Designer.cs">
       <DependentUpon>DraggableForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileBrowserBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FileBrowserBox.Designer.cs">
+      <DependentUpon>FileBrowserBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="ImageGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -113,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DraggableForm.resx">
       <DependentUpon>DraggableForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileBrowserBox.resx">
+      <DependentUpon>FileBrowserBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageGrid.resx">
       <DependentUpon>ImageGrid.cs</DependentUpon>

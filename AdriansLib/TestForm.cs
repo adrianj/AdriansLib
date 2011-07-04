@@ -21,7 +21,28 @@ namespace DTALib
         public Type[] TestableTypes
         {
             get { return mTestableTypes; }
-            set { mTestableTypes = value; testCombo.DataSource = mTestableTypes; }
+            set {
+                mTestableTypes = value; 
+                testCombo.Items.Clear();
+                testCombo.Items.AddRange(mTestableTypes);
+            }
+        }
+
+        public string SelectedTest
+        {
+            get
+            {
+                if (testCombo == null || testCombo.SelectedItem == null) 
+                    return "";
+                return ""+testCombo.SelectedItem;
+            }
+            set {
+                foreach (object t in testCombo.Items)
+                {
+                    if (t.ToString().Equals(value))
+                        testCombo.SelectedItem = t;
+                }
+            }
         }
 
         private void TestForm_Load(object sender, EventArgs e)
@@ -30,7 +51,6 @@ namespace DTALib
             List<Type> test = new List<Type>();
             foreach (Type t in ts)
             {
-                Console.WriteLine("" + t+","+t.IsSubclassOf(typeof(ITestClass)));
                 if (t.GetInterfaces().Contains(typeof(ITestClass)))
                     test.Add(t);
             }
@@ -39,10 +59,14 @@ namespace DTALib
 
         private void runButton_Click(object sender, EventArgs e)
         {
-            if(testCombo.SelectedValue == null) return;
-            Type t = testCombo.SelectedValue as Type;
+            if(this.testCombo.SelectedItem == null) return;
+            Type t = testCombo.SelectedItem as Type;
             ITestClass itc = Activator.CreateInstance(t) as ITestClass;
-            itc.RunTests();
+            int failCount = 0;
+            int testCount = 0; 
+            failMsgBox.Text = itc.RunTests(ref failCount, ref testCount);
+            failCountBox.Text = "Failed " + failCount + "/" + testCount;
         }
+
     }
 }

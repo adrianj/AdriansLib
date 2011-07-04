@@ -12,10 +12,11 @@ namespace DTALibClient
     public partial class Test_DraggableForm : UserControl, DTALib.ITestClass
     {
 
-        public int RunTests()
+        public string RunTests(ref int testCount, ref int failCount)
         {
             DTALib.DraggableForm.ShowForm(textBox);
-            return 0;
+            testCount++;
+            return "";
         }
 
         public Test_DraggableForm()

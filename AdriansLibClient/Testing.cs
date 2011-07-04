@@ -11,55 +11,55 @@ using System.Threading;
 
 namespace DTALibClient
 {
-    class Testing
+    public class Testing
     {
+        private static TestForm form;
+
         [STAThreadAttribute]
         static void Main(string[] args)
         {
             Application.DoEvents();
             Application.EnableVisualStyles();
-            Application.Run(new TestForm());
-            /*
-            int tests = Tester.RunTests(args);
-            if (tests >= 0)
+            form = new TestForm();
+            form.Load += new EventHandler(form_Load);
+            form.FormClosed += new FormClosedEventHandler(form_FormClosed);
+            Application.Run(form);
+        }
+
+
+        static void form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (form.SelectedTest != null && form.SelectedTest.Length > 0)
             {
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
+                AdriansLibClient.Properties.Settings.Default.PreviousTest = form.SelectedTest;
+                AdriansLibClient.Properties.Settings.Default.Save();
             }
-             */
+        }
+
+        static void form_Load(object sender, EventArgs e)
+        {
+            form.SelectedTest = AdriansLibClient.Properties.Settings.Default.PreviousTest;
         }
     }
 
     public class Test_AboutBox : ITestClass
     {
-        public int RunTests()
+        public string RunTests(ref int failCount, ref int testCount)
         {
             About.CheckDependencies();
             About.ShowAboutDialog();
-            return 0;
+            testCount++;
+            return "";
         }
     }
 
 
     public class Test_ProgressBarForm : ITestClass
     {
-        public int RunTests()
-        {
-            if (MessageBox.Show("Do you wish to test?", "test?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No) return -1;
-
-            int failures = 0;
-            //failures += TestBackground();
-
-            return failures;
-        }
-
         private int eventCount = 0;
 
-
-        public int TestBackground()
+        public string RunTests(ref int failCount, ref int testCount)
         {
-            int failures = 0;
-            int tests = 0;
             int expectedResult = 20;
             eventCount = 0;
             DialogResult expectedDialogResult = DialogResult.OK;
@@ -69,9 +69,9 @@ namespace DTALibClient
                 MessageBox.Show("Will start progress bar with text box. Wait 2 seconds. Do not click Cancel");
                 prog.ButtonWidth += 30;
                 prog.StartWorker(Operation, expectedResult);
-                if (expectedDialogResult != prog.DialogResult) Console.WriteLine("Failure: " + (++failures)); tests++;
-                if (eventCount != 1) Console.WriteLine("Failure: " + (++failures)); tests++;
-                if (prog.DialogResult == DialogResult.OK && expectedResult != (int)prog.Result) Console.WriteLine("Failure: " + (++failures)); tests++;
+                if (expectedDialogResult != prog.DialogResult) Console.WriteLine("Failure: " + (++failCount)); testCount++;
+                if (eventCount != 1) Console.WriteLine("Failure: " + (++failCount)); testCount++;
+                if (prog.DialogResult == DialogResult.OK && expectedResult != (int)prog.Result) Console.WriteLine("Failure: " + (++failCount)); testCount++;
             }
             expectedDialogResult = DialogResult.Cancel; 
             expectedResult = 50;
@@ -80,13 +80,12 @@ namespace DTALibClient
                 prog.RunWorkerCompleted += new RunWorkerCompletedEventHandler(prog_RunWorkerCompleted);
                 MessageBox.Show("Will start progress bar without text box. Click Cancel");
                 prog.StartWorker(Operation, expectedResult);
-                if (expectedDialogResult != prog.DialogResult) Console.WriteLine("Failure: " + (++failures)); tests++;
-                if (eventCount != 2) Console.WriteLine("Failure: " + (++failures)); tests++;
-                if (prog.DialogResult == DialogResult.OK && expectedResult != (int)prog.Result) Console.WriteLine("Failure: " + (++failures)); tests++;
+                if (expectedDialogResult != prog.DialogResult) Console.WriteLine("Failure: " + (++failCount)); testCount++;
+                if (eventCount != 2) Console.WriteLine("Failure: " + (++failCount)); testCount++;
+                if (prog.DialogResult == DialogResult.OK && expectedResult != (int)prog.Result) Console.WriteLine("Failure: " + (++failCount)); testCount++;
             }
 
-            Console.WriteLine("TestBackground() Failed " + failures + " / " + tests);
-            return failures;
+            return "";
         }
 
         void prog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

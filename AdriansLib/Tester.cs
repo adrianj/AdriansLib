@@ -9,7 +9,13 @@ namespace DTALib
 
     public interface ITestClass
     {
-        int RunTests();
+        /// <summary>
+        /// Runs the tests associated with this class.
+        /// </summary>
+        /// <param name="failCount">Reference to an integer containing the running total of test failures.</param>
+        /// <param name="testCount">Reference to an integer containing the running total of tests performed</param>
+        /// <returns>A string describing the nature of failed tests.</returns>
+        string RunTests(ref int failCount, ref int testCount);
     }
 
     /// <summary>
@@ -35,7 +41,9 @@ namespace DTALib
                     if (type.GetInterfaces().Contains(typeof(ITestClass)))
                     {
                         ITestClass tester = (ITestClass)Activator.CreateInstance(type);
-                        failures += tester.RunTests();
+                        int failCount = 0, testCount = 0;
+                        string failMsg = tester.RunTests(ref failCount, ref testCount);
+                        failures += failCount;
                     }
                 }
             }
@@ -48,12 +56,13 @@ namespace DTALib
                         string n = type.Name;
                         if (n.Length < arg.Length) continue;
                         n = n.Substring(n.Length - arg.Length);
-                        Console.WriteLine("test : '"+type+"' matches '" + n + "'?");
                         // Find and run types that implement TestClass interface, and name ends with args[i]
                         if (type.GetInterfaces().Contains(typeof(ITestClass)) && n.Equals(arg, StringComparison.InvariantCultureIgnoreCase))
                         {
                             ITestClass tester = (ITestClass)Activator.CreateInstance(type);
-                            failures += tester.RunTests();
+                            int failCount = 0, testCount = 0;
+                            string failMsg = tester.RunTests(ref failCount, ref testCount);
+                            failures += failCount;
                         }
                     }
                 }

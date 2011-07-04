@@ -172,7 +172,6 @@ namespace DTALib
             {
                 this.DialogResult = DialogResult.OK;
                 this.Result = e.Result;
-                //this.progressBar.Value = this.Maximum;
             }
             if(RunWorkerCompleted != null)
                 RunWorkerCompleted(this, e);

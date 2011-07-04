@@ -142,6 +142,7 @@ namespace DTALib
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
+            this.okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             // 
             // cancelButton
             // 
@@ -152,6 +153,7 @@ namespace DTALib
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            this.cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
             cancelButton.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
             okButton.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;

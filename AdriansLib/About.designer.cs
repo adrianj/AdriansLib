@@ -28,8 +28,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(About));
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Non System Dependencies", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("System Dependencies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Non System Dependencies", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("System Dependencies", System.Windows.Forms.HorizontalAlignment.Left);
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
             this.labelProductName = new System.Windows.Forms.Label();
@@ -166,13 +166,13 @@
             this.columnHeader2,
             this.columnHeader3});
             this.dependencyList.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewGroup1.Header = "Non System Dependencies";
-            listViewGroup1.Name = "non System";
-            listViewGroup2.Header = "System Dependencies";
-            listViewGroup2.Name = "System";
+            listViewGroup3.Header = "Non System Dependencies";
+            listViewGroup3.Name = "non System";
+            listViewGroup4.Header = "System Dependencies";
+            listViewGroup4.Name = "System";
             this.dependencyList.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2});
+            listViewGroup3,
+            listViewGroup4});
             this.dependencyList.Location = new System.Drawing.Point(211, 172);
             this.dependencyList.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
             this.dependencyList.Name = "dependencyList";

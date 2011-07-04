@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.rootLabel = new System.Windows.Forms.Label();
             this.debugTreeView = new DTALib.TreeViewWithoutTooltips();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.rootLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -56,6 +57,15 @@
             this.splitContainer.SplitterDistance = 230;
             this.splitContainer.TabIndex = 0;
             // 
+            // rootLabel
+            // 
+            this.rootLabel.AutoSize = true;
+            this.rootLabel.Location = new System.Drawing.Point(3, 9);
+            this.rootLabel.Name = "rootLabel";
+            this.rootLabel.Size = new System.Drawing.Size(109, 13);
+            this.rootLabel.TabIndex = 1;
+            this.rootLabel.Text = "Currently Inspecting...";
+            // 
             // debugTreeView
             // 
             this.debugTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -73,17 +83,10 @@
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
             this.propertyGrid.Size = new System.Drawing.Size(248, 474);
             this.propertyGrid.TabIndex = 0;
-            // 
-            // rootLabel
-            // 
-            this.rootLabel.AutoSize = true;
-            this.rootLabel.Location = new System.Drawing.Point(3, 9);
-            this.rootLabel.Name = "rootLabel";
-            this.rootLabel.Size = new System.Drawing.Size(109, 13);
-            this.rootLabel.TabIndex = 1;
-            this.rootLabel.Text = "Currently Inspecting...";
+            this.propertyGrid.ToolbarVisible = false;
             // 
             // DebuggingTree
             // 
@@ -95,6 +98,7 @@
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 

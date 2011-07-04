@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AdriansLibClient.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PreviousTest" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Test_DraggableForm</Value>
+    </Setting>
+    <Setting Name="PropertyParserFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Test_PropertyParser.xml</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

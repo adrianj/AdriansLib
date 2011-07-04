@@ -19,6 +19,8 @@ namespace DTALib
         /// </summary>
         public bool TabLock { get { return mTabLock; } set { mTabLock = value; } }
 
+        private Timer ClickTimer = new Timer();
+
         public TabControlHelper(TabControl tc)
         { 
             mTabs = tc;
@@ -30,7 +32,9 @@ namespace DTALib
             mTabs.MouseUp +=new MouseEventHandler(mTabs_MouseUp);
             mTabs.MouseMove +=new MouseEventHandler(mTabs_MouseMove);
             mTabs.MouseDown += new MouseEventHandler(mTabs_MouseDown);
+            ClickTimer.Tick += new EventHandler(ClickTimer_Tick);
         }
+
 
         void mTabs_ControlRemoved(object sender, ControlEventArgs e)
         {
@@ -54,10 +58,18 @@ namespace DTALib
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                mouseListening = true;
-                mTabs.Cursor = tabMoveCursor;
+                ClickTimer.Interval = 300;
+                ClickTimer.Start();
             }
         }
+
+        void ClickTimer_Tick(object sender, EventArgs e)
+        {
+            mouseListening = true;
+            mTabs.Cursor = tabMoveCursor;
+            ClickTimer.Stop();
+        }
+
         void mTabs_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left && mTabs.SelectedTab != null)
@@ -100,20 +112,30 @@ namespace DTALib
 
         private void mTabs_MouseUp(object sender, MouseEventArgs e)
         {
+            ClickTimer.Stop();
             if (!mTabLock && mouseListening && mTabs.SelectedIndex != mouseSelected && mouseSelected < mTabs.TabPages.Count)
             {
+                //this code needs work
                 // swap the tabs around.
-                TabPage tab1 = mTabs.TabPages[mouseSelected];
-                TabPage tab2 = mTabs.TabPages[mTabs.SelectedIndex];
-                int p1 = mPanels.FindIndex(delegate(Panel p) { return p == tab1; });
-                int p2 = mPanels.FindIndex(delegate(Panel p) { return p == tab2; });
-                mTabs.TabPages[mouseSelected] = tab2;
-                mTabs.TabPages[mTabs.SelectedIndex] = tab1;
-                Panel panel1 = mPanels[p1];
-                mPanels[p1] = mPanels[p2];
-                mPanels[p2] = panel1;
+                TabPage targetTab = mTabs.TabPages[mouseSelected];
+                TabPage tab = mTabs.TabPages[mTabs.SelectedIndex];
+                int oldIndex = mTabs.SelectedIndex;
+                int newIndex = mouseSelected;
+                mTabs.TabPages.RemoveAt(oldIndex);
+                //if (newIndex > oldIndex) newIndex--;
+                mTabs.TabPages.Insert(newIndex, tab);
 
-                mTabs.SelectedIndex = mouseSelected;
+                // swap the panels around also.
+                //oldIndex = mPanels.FindIndex(delegate(Panel p) { return p == targetTab; });
+                //newIndex = mPanels.FindIndex(delegate(Panel p) { return p == tab; });
+                //mTabs.TabPages[mouseSelected] = tab2;
+                //mTabs.TabPages[mTabs.SelectedIndex] = tab1;
+                //Panel panel1 = mPanels[oldIndex];
+                //mPanels[oldIndex] = mPanels[newIndex];
+                //mPanels[newIndex] = panel1;
+                //mTabs.TabPages.Insert(mouseSelected, tab1);
+                
+                mTabs.SelectedTab = tab;
             }
             mouseListening = false;
             mTabs.Cursor = Cursors.Default;
