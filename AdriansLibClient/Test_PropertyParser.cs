@@ -28,6 +28,8 @@ namespace AdriansLibClient
             return "PropertyParser Test Complete";
         }
 
+        [Parseable]
+        public DateTime LastAccessed { get { return DateTime.Now; } set { } }
 
         private List<bool> mBools = new List<bool>();
         [Parseable]

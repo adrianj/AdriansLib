@@ -102,7 +102,7 @@ namespace DTALib
         /// </summary>
         public DebuggingTree()
         {
-            
+            populateSpecialFunctionTree();
             InitializeComponent();
             RootObject = this;
             mTimer.Elapsed += mTimer_Tick;
@@ -129,8 +129,9 @@ namespace DTALib
             {
                 tree = new TreeNode("... Timed out. Truncated");
             }
-            else if (value != null && mCurrentDepth <= MaximumDepth)
+            else if (mCurrentDepth <= MaximumDepth)
             {
+                /*
                 string sVal = "" + value;
                 if (sVal.Length > mPadding[0]) sVal = sVal.Substring(0, mPadding[0]);
                 string typeName = value.GetType().Name;
@@ -138,57 +139,96 @@ namespace DTALib
                 typeName = s[s.Length - 1];
                 string text = String.Format("{0} {1} {2}", name.PadRight(mPadding[0]), sVal.PadRight(mPadding[1]),
                     typeName.PadRight(mPadding[2]));
-                tree = new TreeNode(text);
-                tree.Tag = value;
-                if (value is IDictionary)
+                 */
+                if (value == null)
                 {
-                    IDictionary dic = (IDictionary)value;
-                    foreach (object o in dic.Keys)
-                    {
-                        tree.Nodes.Add(AddPropertyNodes(dic[o], "[" + o + "]"));
-                    }
+                    tree = GetGenericNode(value, name);
                 }
-                else if (value is ICollection)
+                else if (SpecialFunctionDictionary.ContainsKey(value.GetType()))
                 {
-                    ICollection coll = (ICollection)value;
-                    int i = 0;
-                    foreach (object o in coll)
-                    {
-                        if (o != null)
-                            tree.Nodes.Add(AddPropertyNodes(o, "[" + i + "]"));
-                        else
-                        {
-                            TreeNode tn = new TreeNode("[" + i + "]");
-                            tree.Nodes.Add(tn);
-                        }
-                        i++;
-                    }
-                }
-                else if (value is Array)
-                {
-                    Array a = value as Array;
-                    for (int i = 0; i < a.Length; i++)
-                        tree.Nodes.Add(AddPropertyNodes(a.GetValue(i), "[" + i + "]"));
+                    GetSpecialNode del = SpecialFunctionDictionary[value.GetType()];
+                    tree = del(value, name);
                 }
                 else
                 {
-                    PropertyInfo[] props = value.GetType().GetProperties();
-                    foreach (PropertyInfo p in props)
+                    tree = GetGenericNode(value, name);
+                    if (value is IDictionary)
+                    {
+                        IDictionary dic = (IDictionary)value;
+                        foreach (object o in dic.Keys)
+                        {
+                            tree.Nodes.Add(AddPropertyNodes(dic[o], "[" + o + "]"));
+                        }
+                    }
+                    else if (value is ICollection)
+                    {
+                        ICollection coll = (ICollection)value;
+                        int i = 0;
+                        foreach (object o in coll)
+                        {
+                            if (o != null)
+                                tree.Nodes.Add(AddPropertyNodes(o, "[" + i + "]"));
+                            else
+                            {
+                                TreeNode tn = new TreeNode("[" + i + "]");
+                                tree.Nodes.Add(tn);
+                            }
+                            i++;
+                        }
+                    }
+                    else if (value is Array)
+                    {
+                        Array a = value as Array;
+                        for (int i = 0; i < a.Length; i++)
+                            tree.Nodes.Add(AddPropertyNodes(a.GetValue(i), "[" + i + "]"));
+                    }
+                    else
                     {
                         int i = 0;
                         try
                         {
-                            MethodInfo getter = p.GetGetMethod();
-                            //object o = p.GetValue(value, null);
-                            object o = getter.Invoke(value, null);
-                            tree.Nodes.Add(AddPropertyNodes(o, p.Name));
-                            i++;
-                            if (i >= MaximumProperties)
-                                break;
+                            PropertyInfo[] props = value.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                            foreach (PropertyInfo p in props)
+                            {
+                                MethodInfo getter = p.GetGetMethod();
+                                object o = getter.Invoke(value, null);
+                                // If property type is the same as current value type, then don't go any deeper than
+                                // a simple ToString of that property (which is what GetGenericNode does)
+                                if (p.PropertyType == value.GetType())
+                                    tree.Nodes.Add(GetGenericNode(o, p.Name));
+                                else
+                                    tree.Nodes.Add(AddPropertyNodes(o, p.Name));
+                                i++;
+                                if (i >= MaximumProperties)
+                                    break;
+                            }
+                            props = value.GetType().GetProperties(BindingFlags.Public | BindingFlags.Static);
+                            if (props.Length > 0)
+                            {
+                                TreeNode staticNode = new TreeNode("Static Properties");
+
+                                foreach (PropertyInfo p in props)
+                                {
+                                    MethodInfo getter = p.GetGetMethod();
+                                    object o = getter.Invoke(value, null);
+                                    // If property type is the same as current value type, then don't go any deeper than
+                                    // a simple ToString of that property (which is what GetGenericNode does)
+                                    if (p.PropertyType == value.GetType())
+                                        staticNode.Nodes.Add(GetGenericNode(o, p.Name));
+                                    else
+                                        staticNode.Nodes.Add(AddPropertyNodes(o, p.Name));
+                                    i++;
+                                    if (i >= MaximumProperties)
+                                        break;
+                                }
+                                tree.Nodes.Add(staticNode);
+                                staticNode.Collapse();
+                            }
                         }
-                        catch (ArgumentException) { break; }
-                        catch (TargetParameterCountException) { break; }
+                        catch (ArgumentException) {  }
+                        catch (TargetParameterCountException) {  }
                         catch (Exception) { throw; }
+
                     }
                 }
             }
@@ -202,8 +242,37 @@ namespace DTALib
             propertyGrid.SelectedObject = e.Node.Tag;
         }
 
+        /// <summary>
+        /// A delegate that is used for some special case Types that are difficult to turn into a TreeNode in the normal
+        /// way .
+        /// </summary>
+        /// <param name="obj">The object to construct a TreeNode from</param>
+        /// <returns>A TreeNode representing the object</returns>
+        private delegate TreeNode GetSpecialNode(object obj, string name);
+        
+        private Dictionary<Type,GetSpecialNode> SpecialFunctionDictionary = new Dictionary<Type,GetSpecialNode>();
+        private void populateSpecialFunctionTree()
+        {
+            //SpecialFunctionDictionary[typeof(DateTime)] = new GetSpecialNode(GetDateNode);
+        }
+
+        private TreeNode GetGenericNode(object obj, string name)
+        {
+            if (name == null || mPadding.Length < 3) return new TreeNode("null");
+            string typeName = "null";
+            if (obj != null) typeName = obj.GetType().Name;
+            string sVal = "null";
+            if (obj != null) sVal = "" + obj;
+            string text = String.Format("{0} {1} {2}", name.PadRight(mPadding[0]), sVal.PadRight(mPadding[1]),
+                typeName.PadRight(mPadding[2]));
+            TreeNode tree = new TreeNode(text);
+            tree.Tag = obj;
+            return tree;
+        }
 
     }
+
+
 
     /// <summary>
     /// Modified TreeView that doesn't automatically show big tooltips for long strings.

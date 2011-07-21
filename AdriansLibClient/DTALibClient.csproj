@@ -64,6 +64,12 @@
     <Compile Include="Test_PropertyParser.Designer.cs">
       <DependentUpon>Test_PropertyParser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Test_TabHelper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Test_TabHelper.Designer.cs">
+      <DependentUpon>Test_TabHelper.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AdriansLib\AdriansLib.csproj">
@@ -77,6 +83,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Test_PropertyParser.resx">
       <DependentUpon>Test_PropertyParser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Test_TabHelper.resx">
+      <DependentUpon>Test_TabHelper.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

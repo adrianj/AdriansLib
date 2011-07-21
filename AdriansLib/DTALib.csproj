@@ -48,6 +48,8 @@
     <Compile Include="About.designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="BinaryReaderBiEndian.cs" />
+    <Compile Include="BinaryWriterBiEndian.cs" />
     <Compile Include="DebuggingTree.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -189,8 +189,8 @@
         20,
         20};
             this.debuggingTree1.Location = new System.Drawing.Point(156, 19);
-            this.debuggingTree1.MaximumDepth = 3;
-            this.debuggingTree1.MaximumProperties = 20;
+            this.debuggingTree1.MaximumDepth = 6;
+            this.debuggingTree1.MaximumProperties = 200;
             this.debuggingTree1.Name = "debuggingTree1";
             this.debuggingTree1.RootAssignmentTimeout = 2000;
             this.debuggingTree1.RootObject = this.debuggingTree1;
