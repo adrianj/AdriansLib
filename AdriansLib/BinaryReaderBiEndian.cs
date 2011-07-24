@@ -15,14 +15,17 @@ namespace DTALib
         /// </summary>
         public bool IsBigEndian { get; set; }
 
-        public BinaryReaderBiEndian(Stream stream)
-        {
-            reader = new BinaryReader(stream);
-        }
+		public BinaryReaderBiEndian(string filename) : this(filename, false) { }
+		public BinaryReaderBiEndian(string filename, bool isBigEndian)
+			: this(new FileStream(filename, FileMode.Open), isBigEndian) { }
+		
+        public BinaryReaderBiEndian(Stream stream) : this(stream,false){}
 
-        public BinaryReaderBiEndian(Stream stream, bool isBigEndian)
-            : this(stream)
-        { IsBigEndian = isBigEndian; }
+		public BinaryReaderBiEndian(Stream stream, bool isBigEndian)
+		{
+			reader = new BinaryReader(stream);
+			IsBigEndian = isBigEndian;
+		}
 
         public short ReadInt16()
         {

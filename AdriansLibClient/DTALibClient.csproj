@@ -72,7 +72,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdriansLib\AdriansLib.csproj">
+    <ProjectReference Include="..\AdriansLib\DTALib.csproj">
       <Project>{35460A36-4E2A-4086-AF04-565123EB6F22}</Project>
       <Name>AdriansLib</Name>
     </ProjectReference>
