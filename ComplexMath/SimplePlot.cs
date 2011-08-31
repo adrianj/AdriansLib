@@ -98,7 +98,7 @@ namespace ComplexMath
             graph.IsShowPointValues = true;
             this.BackgroundImageLayout = ImageLayout.None;
             YAxisRange = new Point(0, 0);
-            XAxisRange = new Point(0, 0); 
+            XAxisRange = new Point(0, 0);
         }
 
         public bool ShowLegend { get; set; }
@@ -501,6 +501,12 @@ namespace ComplexMath
             }
             return 1;
         }
+
+		private void graph_DoubleClick(object sender, EventArgs e)
+		{
+			graph.ZoomOutAll(graph.GraphPane);
+			this.OnDoubleClick(e);
+		}
     }
 
 }

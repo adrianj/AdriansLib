@@ -8,12 +8,16 @@ namespace DTALib
 {
     public class BinaryReaderBiEndian : IDisposable
     {
+		private StreamReader textReader = null;
         private BinaryReader reader = null;
         public Stream BaseStream { get { return reader.BaseStream; } }
         /// <summary>
         /// Get/Set endianness. Default is LittleEndian, ie, same as Windows default.
         /// </summary>
         public bool IsBigEndian { get; set; }
+
+		private string filename;
+		public string Filename { get { return filename; } }
 
 		public BinaryReaderBiEndian(string filename) : this(filename, false) { }
 		public BinaryReaderBiEndian(string filename, bool isBigEndian)
@@ -24,6 +28,15 @@ namespace DTALib
 		public BinaryReaderBiEndian(Stream stream, bool isBigEndian)
 		{
 			reader = new BinaryReader(stream);
+			textReader = new StreamReader(stream);
+			if (stream is FileStream)
+			{
+				filename = (stream as FileStream).Name;
+			}
+			else
+			{
+				filename = this.ToString();
+			}
 			IsBigEndian = isBigEndian;
 		}
 
@@ -32,8 +45,9 @@ namespace DTALib
             if (IsBigEndian)
             {
                 byte[] b = reader.ReadBytes(2);
-                if (b.Length < 2) throw new EndOfStreamException();
-                return (short)(b[1] + (b[0] << 8));
+				if (b.Length < 2) throw new EndOfStreamException();
+				Array.Reverse(b);
+				return BitConverter.ToInt16(b, 0);
             }
             return reader.ReadInt16();
         }
@@ -42,51 +56,80 @@ namespace DTALib
             if (IsBigEndian)
             {
             byte[] b = reader.ReadBytes(2);
-            if (b.Length < 2) throw new EndOfStreamException();
-            return (ushort)(b[1] + (b[0] << 8));
+			if (b.Length < 2) throw new EndOfStreamException();
+			Array.Reverse(b);
+			return BitConverter.ToUInt16(b, 0);
             }
             return reader.ReadUInt16();
         }
+
+		public int ReadInt32()
+		{
+			if (IsBigEndian)
+			{
+				byte[] b = reader.ReadBytes(4);
+				if (b.Length < 4) throw new EndOfStreamException();
+				Array.Reverse(b);
+				return BitConverter.ToInt32(b, 0);
+			}
+			return reader.ReadInt32();
+		}
+
         public uint ReadUInt32()
         {
-            if (IsBigEndian)
-            {
-            byte[] b = reader.ReadBytes(4);
-            if (b.Length < 4) throw new EndOfStreamException();
-            return (uint)(b[3] + (b[2] << 8) + (b[1] << 16) + (b[0] << 24));
-            }
+			if (IsBigEndian)
+			{
+				byte[] b = reader.ReadBytes(4);
+				if (b.Length < 4) throw new EndOfStreamException();
+				Array.Reverse(b);
+				return BitConverter.ToUInt32(b, 0);
+			}
             return reader.ReadUInt32();
         }
         public long ReadInt64()
         {
             if (IsBigEndian)
             {
-                byte[] b = reader.ReadBytes(4);
-                if (b.Length < 4) throw new EndOfStreamException();
-                return (uint)(b[7] + (b[6] << 8) + (b[5] << 16) + (b[4] << 24)
-                    +(b[3] << 32) + (b[2] << 40) + (b[1] << 48) + (b[0] << 56));
+				byte[] b = reader.ReadBytes(8);
+				if (b.Length < 8) throw new EndOfStreamException();
+				Array.Reverse(b);
+				return BitConverter.ToInt64(b, 0);
             }
             return reader.ReadInt64();
         }
         public char ReadChar() { return reader.ReadChar(); }
-        public char[] ReadChars(uint count) { return reader.ReadChars((int)count); }
+        public char[] ReadChars(int count) { return reader.ReadChars(count); }
 
         public byte ReadByte() { return reader.ReadByte(); }
-        public byte[] ReadBytes(uint count) { return reader.ReadBytes((int)count); }
+        public byte[] ReadBytes(int count) { return reader.ReadBytes(count); }
 
         public sbyte ReadSByte() { return reader.ReadSByte(); }
 
         public string ReadLine()
         {
-            StringBuilder sb = new StringBuilder();
-            char c = ReadChar();
-            while (c != '\n')
-            {
-                sb.Append(c);
-                c = ReadChar();
-            }
-            sb.Replace("\r", "");
-            return ""+sb;
+			try
+			{
+				string s = textReader.ReadLine();
+				Console.WriteLine("" + s);
+				return s;
+			}
+			catch (Exception e) { Console.Write("" + e); throw; }
+			/*
+			try
+			{
+				StringBuilder sb = new StringBuilder();
+				char c = ReadChar();
+				while (c != '\n')
+				{
+					sb.Append(c);
+					c = ReadChar();
+				}
+				sb.Replace("\r", "");
+				return "" + sb;
+			}
+			catch (ArgumentException) { }
+			return "";
+			 */
         }
 
         public float ReadSingle()
