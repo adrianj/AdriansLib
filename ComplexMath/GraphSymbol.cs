@@ -37,6 +37,13 @@ namespace ComplexMath
             return new Symbol(SymbolType.Default, color);
         }
 
+		static GraphSymbol()
+		{
+			GraphicsPath graph = new GraphicsPath();
+			graph.AddLine(new Point(100, 0), new Point(-100, 0));
+			graph.AddLine(new Point(0, 100), new Point(0, -100));
+			UserSymbols["Highlight"] = graph;
+		}
          
     }
 }

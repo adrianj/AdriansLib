@@ -27,8 +27,6 @@ namespace DTALib
             foreach (TabPage tp in mTabs.TabPages) mPanels.Add(tp as Panel);
             mTabs.ControlAdded += new ControlEventHandler(mTabs_ControlAdded);
             mTabs.ControlRemoved += new ControlEventHandler(mTabs_ControlRemoved);
-            //mTabs.DragDrop +=new DragEventHandler(mTabs_DragDrop);
-            //mTabs.DragEnter +=new DragEventHandler(mTabs_DragEnter);
             mTabs.MouseUp +=new MouseEventHandler(mTabs_MouseUp);
             mTabs.MouseMove +=new MouseEventHandler(mTabs_MouseMove);
             mTabs.MouseDown += new MouseEventHandler(mTabs_MouseDown);
@@ -115,26 +113,12 @@ namespace DTALib
             ClickTimer.Stop();
             if (!mTabLock && mouseListening && mTabs.SelectedIndex != mouseSelected && mouseSelected < mTabs.TabPages.Count)
             {
-                //this code needs work
-                // swap the tabs around.
                 TabPage targetTab = mTabs.TabPages[mouseSelected];
                 TabPage tab = mTabs.TabPages[mTabs.SelectedIndex];
                 int oldIndex = mTabs.SelectedIndex;
                 int newIndex = mouseSelected;
                 mTabs.TabPages.RemoveAt(oldIndex);
-                //if (newIndex > oldIndex) newIndex--;
                 mTabs.TabPages.Insert(newIndex, tab);
-
-                // swap the panels around also.
-                //oldIndex = mPanels.FindIndex(delegate(Panel p) { return p == targetTab; });
-                //newIndex = mPanels.FindIndex(delegate(Panel p) { return p == tab; });
-                //mTabs.TabPages[mouseSelected] = tab2;
-                //mTabs.TabPages[mTabs.SelectedIndex] = tab1;
-                //Panel panel1 = mPanels[oldIndex];
-                //mPanels[oldIndex] = mPanels[newIndex];
-                //mPanels[newIndex] = panel1;
-                //mTabs.TabPages.Insert(mouseSelected, tab1);
-                
                 mTabs.SelectedTab = tab;
             }
             mouseListening = false;
@@ -151,18 +135,22 @@ namespace DTALib
         private void popOutTab()
         {
             if (mTabLock) return;
-            TabPage selectedTab = mTabs.TabPages[mTabs.SelectedIndex];
+			int index = mTabs.SelectedIndex;
+			TabPage selectedTab = mTabs.TabPages[index];
             Panel newPanel = convertTabToPanel(selectedTab);
             DTALib.DraggableForm df = DTALib.DraggableForm.ShowForm(newPanel);
             df.Text = mTabs.TabPages[mTabs.SelectedIndex].Text;
             df.FormClosing += new FormClosingEventHandler(df_FormClosing);
             mTabs.TabPages.Remove(selectedTab);
+			AllPanels.Insert(index, newPanel);
             df.Focus();
         }
 
         private Panel convertTabToPanel(TabPage tab)
         {
             Panel pan = new Panel();
+			pan.Name = tab.Name;
+			Console.WriteLine("convert panel: " + pan.Name);
             pan.Size = tab.Size;
             int count = tab.Controls.Count;
             for (int i = 0; i < count; i++)
@@ -174,42 +162,33 @@ namespace DTALib
         {
             if (mTabLock) return;
             Panel panel = df.Control as Panel;
-            TabPage newTab = new TabPage();
-            mTabs.TabPages.Add(newTab);
+			TabPage newTab = new TabPage();
+			newTab.Name = panel.Name;
+			int tabIndex = FindIndexOfNamedTab(newTab.Name);
+		
+			if (tabIndex >= 0)
+			{
+				AllPanels.RemoveAt(tabIndex);
+				mTabs.TabPages.Insert(tabIndex, newTab);
+			}
+			else
+				mTabs.TabPages.Add(newTab);
             newTab.Controls.Add(panel);
             newTab.Text = df.Text;
 
         }
 
-        //private Type[] supportedDropTypes = new Type[] { typeof(DTALib.DraggableForm), typeof(TabPage) };
-        //private object droppedObj = null;
+		int FindIndexOfNamedTab(string name)
+		{
+			int count = AllPanels.Count;
+			for (int i = 0; i < count; i++)
+			{
+				if (AllPanels[i].Name.Equals(name))
+					return i;
+			}
+			return -1;
+		}
 
-        /*
-        private void mTabs_DragEnter(object sender, DragEventArgs e)
-        {
-            foreach (Type t in supportedDropTypes)
-            {
-                object o = e.Data.GetData(t);
-                if (o != null)
-                {
-                    e.Effect = DragDropEffects.Move;
-                    droppedObj = o;
-                    return;
-                }
-            }
-            droppedObj = null;
-        }
-
-        private void mTabs_DragDrop(object sender, DragEventArgs e)
-        {
-            if (e.Effect != DragDropEffects.Move || mTabLock) return;
-            if (droppedObj.GetType().Equals(typeof(DTALib.DraggableForm)))
-            {
-                DTALib.DraggableForm df = droppedObj as DTALib.DraggableForm;
-                df.Close();
-            }
-        }
-         */
         #endregion
     }
 }

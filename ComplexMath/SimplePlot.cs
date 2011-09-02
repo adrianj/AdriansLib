@@ -9,14 +9,14 @@ using System.Text;
 using System.Windows.Forms;
 using ZedGraph;
 using System.IO;
-//using NationalInstruments;
-//using NationalInstruments.DAQmx;
 
 namespace ComplexMath
 {
     public partial class SimplePlot : UserControl
     {
-        public const int MAX_SAMPLES = 10000;
+		private int maxSamples = 10000;
+		public int MaxSamples { get { return maxSamples; } set { maxSamples = value; } }
+		private int decimation = 1;
         public ICFunction [] ComplexFunctions { get; set; }
 
         private double mAspectRatio = 0;
@@ -47,6 +47,7 @@ namespace ComplexMath
         public PointF XAxisRange { get; set; }
 
         private CurveList mCurveList = new CurveList();
+		private CurveList highlightList = new CurveList();
 
         public string YLabel
         {
@@ -92,14 +93,6 @@ namespace ComplexMath
             }
         }
 
-        public SimplePlot()
-        {
-            InitializeComponent();
-            graph.IsShowPointValues = true;
-            this.BackgroundImageLayout = ImageLayout.None;
-            YAxisRange = new Point(0, 0);
-            XAxisRange = new Point(0, 0);
-        }
 
         public bool ShowLegend { get; set; }
         
@@ -168,16 +161,15 @@ namespace ComplexMath
                 return BaseFunction.FunctionsToString(ComplexFunctions);
             }
         }
-        public void SetComplexFunctions(string functionString, NodeLabelCallback FunctionCallback)
-        {
-            string[] ss = functionString.Split(new string[] { ";" }, StringSplitOptions.None);
-            ICFunction[] cft = new ICFunction[ss.Length];
-            for (int i = 0; i < ss.Length; i++)
-            {
-                cft[i] = BaseFunction.CreateNode(ss[i], FunctionCallback);
-            }
-            ComplexFunctions = cft;
-        }
+
+		public SimplePlot()
+		{
+			InitializeComponent();
+			graph.IsShowPointValues = true;
+			this.BackgroundImageLayout = ImageLayout.None;
+			YAxisRange = new Point(0, 0);
+			XAxisRange = new Point(0, 0);
+		}
 
         private string mChartFilename = null;
         public string ChartImageFilename
@@ -205,6 +197,17 @@ namespace ComplexMath
         private Image mBackground;
         public Image ChartBackgroundImage { get { return mBackground; } set { mBackground = value; scaleBackground(); } }
 
+
+		public void SetComplexFunctions(string functionString, NodeLabelCallback FunctionCallback)
+		{
+			string[] ss = functionString.Split(new string[] { ";" }, StringSplitOptions.None);
+			ICFunction[] cft = new ICFunction[ss.Length];
+			for (int i = 0; i < ss.Length; i++)
+			{
+				cft[i] = BaseFunction.CreateNode(ss[i], FunctionCallback);
+			}
+			ComplexFunctions = cft;
+		}
         private void scaleBackground()
         {
             if (mBackground != null)
@@ -241,14 +244,15 @@ namespace ComplexMath
             graph.GraphPane.YAxis.MajorGrid.IsVisible = true;
         }
 
+
         public void PlotWaveform()
         {
             ICFunction[] cft = ComplexFunctions;
             if (cft == null) return;
             int nPlots = 0;
             foreach (ICFunction icf in cft) if (icf.Name.Equals("Plot")) nPlots++;
-            double[][] x = new double[nPlots][];
-            double[][] y = new double[nPlots][];
+            double[][]x = new double[nPlots][];
+            double[][]y = new double[nPlots][];
             Color[] colors = new Color[nPlots];
             ZedGraph.Symbol[] symbols = new ZedGraph.Symbol[nPlots];
             string[] labels = new string[nPlots];
@@ -317,18 +321,21 @@ namespace ComplexMath
 
 
             // If way too many samples, decimate it down.
-            if (X.Length > MAX_SAMPLES)
-            {
-                int dec = X.Length / MAX_SAMPLES;
-                double[] temp = new double[X.Length/dec];
-                for (int i = 0; i < temp.Length; i++)
-                    temp[i] = X[i * dec];
-                X = temp;
-                temp = new double[Y.Length/dec];
-                for (int i = 0; i < temp.Length; i++)
-                    temp[i] = Y[i * dec];
-                Y = temp;
-            }
+			if (X.Length > MaxSamples)
+			{
+				decimation = X.Length / MaxSamples;
+				double[] temp = new double[X.Length / decimation];
+				for (int i = 0; i < temp.Length; i++)
+					temp[i] = X[i * decimation];
+				X = temp;
+				temp = new double[Y.Length / decimation];
+				for (int i = 0; i < temp.Length; i++)
+					temp[i] = Y[i * decimation];
+				Y = temp;
+			}
+			else
+				decimation = 1;
+
             if (!ShowLegend) label = "";
             LineItem li = new LineItem(label, X, Y, color, SymbolType.UserDefined,lineWidth);
             li.Symbol = symbol;
@@ -379,13 +386,32 @@ namespace ComplexMath
         }
         public void DisplayCurves()
         {
-            graph.GraphPane.CurveList = mCurveList;
+			CurveList allCurves = new CurveList(mCurveList);
+			allCurves.AddRange(highlightList);
+            graph.GraphPane.CurveList = allCurves;
+			
             ScaleAxes();
         }
         public void Clear()
         {
             mCurveList = new CurveList();
         }
+
+		public void HighlightIndex(int index, int curveIndex, Color color)
+		{
+			if (curveIndex >= mCurveList.Count) return;
+			int selectedIndex = index / decimation;
+			
+			CurveItem curve = mCurveList[curveIndex];
+			PointPair p = curve.Points[selectedIndex];
+
+			LineItem li = new LineItem("", new double[] { p.X }, new double[] { p.Y }, color, SymbolType.UserDefined, 1);
+			li.Symbol = GraphSymbol.GetSymbol("Highlight", color);
+			highlightList.Clear();
+			highlightList.Add(li);
+			DisplayCurves();
+			
+		}
 
         private void updateAspectRatio()
         {
