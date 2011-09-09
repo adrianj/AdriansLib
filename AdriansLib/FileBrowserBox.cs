@@ -241,6 +241,12 @@ namespace DTALib
             if (comboBox.SelectedItem != null)
                 Filename = comboBox.SelectedItem as string;
         }
+
+		private void comboBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.Enter)
+				Filename = comboBox.Text;
+		}
     }
 
 }

@@ -14,6 +14,10 @@ namespace ComplexMath
 {
     public partial class SimplePlot : UserControl
     {
+		public enum AxisScaleType { Auto, Square, UserDefined };
+		private AxisScaleType scaleType = AxisScaleType.Auto;
+		public AxisScaleType ScaleType { get { return scaleType; } set { scaleType = value; ScaleAxes(); } }
+
 		private int maxSamples = 10000;
 		public int MaxSamples { get { return maxSamples; } set { maxSamples = value; } }
 		private int decimation = 1;
@@ -165,7 +169,9 @@ namespace ComplexMath
 		public SimplePlot()
 		{
 			InitializeComponent();
+			InitializeContextMenu();
 			graph.IsShowPointValues = true;
+			Console.WriteLine("context; " + graph.ContextMenuStrip);
 			this.BackgroundImageLayout = ImageLayout.None;
 			YAxisRange = new Point(0, 0);
 			XAxisRange = new Point(0, 0);
@@ -223,26 +229,64 @@ namespace ComplexMath
                 Refresh();
             }
             else
-                graph.GraphPane.Chart.Fill = new Fill();
+				graph.GraphPane.Chart.Fill = new Fill();
         }
 
         public void ScaleAxes()
-        {
-            graph.GraphPane.AxisChange();
-            
-            if (YAxisRange.X != 0 || YAxisRange.Y != 0)
-            {
-                graph.GraphPane.YAxis.Scale.Min = YAxisRange.X;
-                graph.GraphPane.YAxis.Scale.Max = YAxisRange.Y;
-            }
-            if (XAxisRange.X != 0 || XAxisRange.Y != 0)
-            {
-                graph.GraphPane.XAxis.Scale.Min = XAxisRange.X;
-                graph.GraphPane.XAxis.Scale.Max = XAxisRange.Y;
-            }
-            graph.GraphPane.XAxis.MajorGrid.IsVisible = true;
-            graph.GraphPane.YAxis.MajorGrid.IsVisible = true;
+		{
+			GraphPane pane = graph.GraphPane;
+			if (ScaleType == AxisScaleType.Auto)
+			{
+				double[] points = GetCurveMinMax();
+				SetScaleToPoints(points);
+				AspectRatio = -1;
+			}
+			else if (ScaleType == AxisScaleType.UserDefined)
+			{
+				double[] points = new double []{ XAxisRange.X, XAxisRange.Y, YAxisRange.X, YAxisRange.Y };
+				SetScaleToPoints(points);
+				AspectRatio = -1;
+			}
+			else if (ScaleType == AxisScaleType.Square)
+			{
+				double[] points = GetCurveMinMax();
+				double max = Math.Max(points[1], points[3]);
+				double min = Math.Min(points[0], points[2]);
+				SetScaleToPoints(new double[]{min,max,min,max});
+				AspectRatio = 1;
+			}
+			graph.AxisChange();
+			pane.XAxis.MajorGrid.IsVisible = true;
+			pane.YAxis.MajorGrid.IsVisible = true;
         }
+
+		void SetScaleToPoints(double[] points)
+		{
+			graph.GraphPane.XAxis.Scale.Min = points[0];
+			graph.GraphPane.XAxis.Scale.Max = points[1];
+			graph.GraphPane.YAxis.Scale.Min = points[2];
+			graph.GraphPane.YAxis.Scale.Max = points[3];
+		}
+
+		double [] GetCurveMinMax()
+		{
+			double maxX = double.MinValue;
+			double minX = double.MaxValue;
+			double maxY = double.MinValue;
+			double minY = double.MaxValue;
+			foreach (CurveItem curve in mCurveList)
+			{
+				for(int i = 0; i < curve.Points.Count; i++)
+				{
+					PointPair pp = curve.Points[i];
+					if (pp.X > maxX) maxX = pp.X;
+					if (pp.X < minX) minX = pp.X;
+					if (pp.Y > maxY) maxY = pp.Y;
+					if (pp.Y < minY) minY = pp.Y;
+				}
+			}
+			return new double[] { minX, maxX,minY, maxY };
+		}
 
 
         public void PlotWaveform()
@@ -400,9 +444,9 @@ namespace ComplexMath
 		public void HighlightIndex(int index, int curveIndex, Color color)
 		{
 			if (curveIndex >= mCurveList.Count) return;
-			int selectedIndex = index / decimation;
-			
 			CurveItem curve = mCurveList[curveIndex];
+			int selectedIndex = index / decimation;
+			if (selectedIndex >= curve.Points.Count) return;
 			PointPair p = curve.Points[selectedIndex];
 
 			LineItem li = new LineItem("", new double[] { p.X }, new double[] { p.Y }, color, SymbolType.UserDefined, 1);
@@ -528,11 +572,44 @@ namespace ComplexMath
             return 1;
         }
 
+		
+
 		private void graph_DoubleClick(object sender, EventArgs e)
 		{
-			graph.ZoomOutAll(graph.GraphPane);
+			this.ScaleAxes();
 			this.OnDoubleClick(e);
 		}
-    }
+
+		#region Context Menu Additions
+
+
+		ToolStripDropDownButton scaleMenu = new ToolStripDropDownButton();
+
+		void InitializeContextMenu()
+		{
+			scaleMenu.Text = "Axis Scale Type: " + ScaleType;
+			scaleMenu.DropDownItems.Clear();
+			foreach (AxisScaleType axisType in Enum.GetValues(typeof(AxisScaleType)))
+			{
+				scaleMenu.DropDownItems.Add(new ToolStripButton("" + axisType, null, scaleMenuClick));
+			}
+		}
+
+		void scaleMenuClick(object sender, EventArgs e)
+		{
+			if (!(sender is ToolStripItem)) return;
+			ToolStripItem tsi = sender as ToolStripItem;
+			AxisScaleType type = (AxisScaleType)Enum.Parse(typeof(AxisScaleType), tsi.Text);
+			ScaleType = type;
+			scaleMenu.Text = "Axis Scale Type: " + ScaleType;
+		}
+
+		private void graph_ContextMenuBuilder(ZedGraphControl sender, ContextMenuStrip menuStrip, Point mousePt, ZedGraphControl.ContextMenuObjectState objState)
+		{
+			menuStrip.Items.Add(scaleMenu);
+		}
+
+		#endregion
+	}
 
 }

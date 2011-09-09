@@ -40,8 +40,9 @@ namespace ComplexMath
 		static GraphSymbol()
 		{
 			GraphicsPath graph = new GraphicsPath();
-			graph.AddLine(new Point(100, 0), new Point(-100, 0));
-			graph.AddLine(new Point(0, 100), new Point(0, -100));
+			graph.AddLine(new Point(1000, 0), new Point(-1000, 0));
+			graph.AddLine(new Point(-1000, 0), new Point(0, 0));
+			graph.AddLine(new Point(0, 1000), new Point(0, -1000));
 			UserSymbols["Highlight"] = graph;
 		}
          

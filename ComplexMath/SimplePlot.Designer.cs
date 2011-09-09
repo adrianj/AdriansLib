@@ -45,6 +45,7 @@
 			this.graph.ScrollMinY2 = 0D;
 			this.graph.Size = new System.Drawing.Size(610, 437);
 			this.graph.TabIndex = 0;
+			this.graph.ContextMenuBuilder += new ZedGraph.ZedGraphControl.ContextMenuBuilderEventHandler(this.graph_ContextMenuBuilder);
 			this.graph.DoubleClick += new System.EventHandler(this.graph_DoubleClick);
 			// 
 			// SimplePlot
@@ -62,6 +63,6 @@
 
         #endregion
 
-        private ZedGraph.ZedGraphControl graph;
+		private ZedGraph.ZedGraphControl graph;
     }
 }
