@@ -128,7 +128,7 @@ namespace ComplexMath
             if (a.Count < 1 || a[0] == null) return null;
             double[] real = a[0].Real;
             double[] imag = a[0].Imag;
-            if (imag.Length != real.Length) imag = new double[real.Length];
+            if (imag == null || imag.Length != real.Length) imag = new double[real.Length];
             if (Children.Count > 1)
                 imag = Children[1].Eval().Real;
             // Find 2^x just less than data length

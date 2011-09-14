@@ -34,7 +34,9 @@
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -75,6 +77,7 @@
     <Compile Include="FileBrowserBox.Designer.cs">
       <DependentUpon>FileBrowserBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="GenericTypeConverter.cs" />
     <Compile Include="ImageGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -87,6 +90,7 @@
     <Compile Include="ListViewEditable.Designer.cs">
       <DependentUpon>ListViewEditable.cs</DependentUpon>
     </Compile>
+    <Compile Include="ObjectCollectionEditor.cs" />
     <Compile Include="PictureBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

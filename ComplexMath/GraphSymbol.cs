@@ -15,18 +15,19 @@ namespace ComplexMath
         public static Dictionary<string, GraphicsPath> UserSymbols = new Dictionary<string,GraphicsPath>();
 
         public static Symbol GetSymbol(string s, Color color)
-        {
-            if (UserSymbols.ContainsKey(s))
+		{
+			if (s.Equals("None")) return new Symbol(SymbolType.None, color);
+			Dictionary<string, GraphicsPath> symbols = UserSymbols;
+			if (symbols.ContainsKey(s))
             {
                 Symbol ret = new Symbol(SymbolType.UserDefined, color);
-                ret.UserSymbol = UserSymbols[s];
+				ret.UserSymbol = symbols[s];
                 return ret;
             }
             if (s.Equals("Square")) return new Symbol(SymbolType.Square, color);
             if (s.Equals("Circle")) return new Symbol(SymbolType.Circle, color);
             if (s.Equals("Diamond")) return new Symbol(SymbolType.Diamond, color);
             if (s.Equals("HDash")) return new Symbol(SymbolType.HDash, color);
-            if (s.Equals("None")) return new Symbol(SymbolType.None, color);
             if (s.Equals("Plus")) return new Symbol(SymbolType.Plus, color);
             if (s.Equals("Star")) return new Symbol(SymbolType.Star, color);
             if (s.Equals("Triangle")) return new Symbol(SymbolType.Triangle, color);

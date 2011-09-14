@@ -16,7 +16,17 @@ namespace ComplexMath
     {
 		public enum AxisScaleType { Auto, Square, UserDefined };
 		private AxisScaleType scaleType = AxisScaleType.Auto;
-		public AxisScaleType ScaleType { get { return scaleType; } set { scaleType = value; ScaleAxes(); } }
+		public AxisScaleType ScaleType
+		{
+			get { return scaleType; }
+			set
+			{
+				scaleType = value;
+				scaleMenu.Text = "Axis Scale Type: " + ScaleType; 
+				ScaleAxes();
+				UpdateAxes();
+			}
+		}
 
 		private int maxSamples = 10000;
 		public int MaxSamples { get { return maxSamples; } set { maxSamples = value; } }
@@ -38,7 +48,7 @@ namespace ComplexMath
             }
         }
 
-        public static Color[] ColorList = { Color.Blue, Color.Red, Color.Green, Color.Orange, 
+		public static Color[] ColorList = { Color.Blue, Color.Red, Color.Green, Color.Orange, 
                                             Color.Purple, Color.Black, Color.Yellow, Color.Cyan,
                                             Color.LightSkyBlue, Color.Gray, Color.LimeGreen, Color.Maroon,
                                             Color.DarkViolet, Color.DarkGray, Color.SandyBrown, Color.Magenta
@@ -113,6 +123,8 @@ namespace ComplexMath
                     XAxisRange = p;
                     p = new PointF(float.Parse(ax[2]), float.Parse(ax[3]));
                     YAxisRange = p;
+					if (XAxisRange.X != 0 || XAxisRange.Y != 0 || YAxisRange.X != 0 || YAxisRange.Y != 0)
+						this.ScaleType = AxisScaleType.UserDefined;
                 }
                 catch (FormatException) { }
             }
@@ -232,6 +244,9 @@ namespace ComplexMath
 				graph.GraphPane.Chart.Fill = new Fill();
         }
 
+
+
+
         public void ScaleAxes()
 		{
 			GraphPane pane = graph.GraphPane;
@@ -239,26 +254,32 @@ namespace ComplexMath
 			{
 				double[] points = GetCurveMinMax();
 				SetScaleToPoints(points);
-				AspectRatio = -1;
+				//AspectRatio = -1;
 			}
 			else if (ScaleType == AxisScaleType.UserDefined)
 			{
 				double[] points = new double []{ XAxisRange.X, XAxisRange.Y, YAxisRange.X, YAxisRange.Y };
 				SetScaleToPoints(points);
-				AspectRatio = -1;
+				//AspectRatio = -1;
 			}
 			else if (ScaleType == AxisScaleType.Square)
 			{
 				double[] points = GetCurveMinMax();
 				double max = Math.Max(points[1], points[3]);
 				double min = Math.Min(points[0], points[2]);
-				SetScaleToPoints(new double[]{min,max,min,max});
-				AspectRatio = 1;
+				SetScaleToPoints(new double[] { min, max, min, max });
+				//AspectRatio = 1;
 			}
-			graph.AxisChange();
 			pane.XAxis.MajorGrid.IsVisible = true;
 			pane.YAxis.MajorGrid.IsVisible = true;
         }
+
+		public void UpdateAxes()
+		{
+			this.graph.GraphPane.AxisChange();
+			Console.WriteLine("" + Title + ", update");
+		}
+
 
 		void SetScaleToPoints(double[] points)
 		{
@@ -352,49 +373,6 @@ namespace ComplexMath
             return newY;
         }
 
-        public void PlotWaveform(double[] X, double[] Y, Color color)
-        {
-            PlotWaveform(X, Y, color, " ", new Symbol(SymbolType.None, color));
-        }
-        public void PlotWaveform(double[] X, double[] Y, Color color, string label, Symbol symbol)
-        {
-            if (X == null || X.Length < 1 || Y == null || X.Length != Y.Length) return;
-
-            if (symbol == null) symbol = new Symbol(SymbolType.None, color);
-            float lineWidth = (float)mLineWidth;
-
-
-            // If way too many samples, decimate it down.
-			if (X.Length > MaxSamples)
-			{
-				decimation = X.Length / MaxSamples;
-				double[] temp = new double[X.Length / decimation];
-				for (int i = 0; i < temp.Length; i++)
-					temp[i] = X[i * decimation];
-				X = temp;
-				temp = new double[Y.Length / decimation];
-				for (int i = 0; i < temp.Length; i++)
-					temp[i] = Y[i * decimation];
-				Y = temp;
-			}
-			else
-				decimation = 1;
-
-            if (!ShowLegend) label = "";
-            LineItem li = new LineItem(label, X, Y, color, SymbolType.UserDefined,lineWidth);
-            li.Symbol = symbol;
-
-
-            AddCurve(li);
-            // Legend positioning.
-            /*
-            graph.GraphPane.Legend.Position = LegendPos.Float;
-            graph.GraphPane.Legend.Location = new Location(0, 0, CoordType.PaneFraction,
-                                AlignH.Right, AlignV.Top);
-            graph.GraphPane.Legend.FontSpec.Size = 10;
-            graph.GraphPane.Legend.IsHStack = false;
-             */
-        }
         public void PlotWaveform(double[][] X, double[][] Y)
         {
             PlotWaveform(X, Y, null,null,null);
@@ -424,6 +402,41 @@ namespace ComplexMath
             DisplayCurves();
         }
 
+		public void PlotWaveform(double[] X, double[] Y, Color color)
+		{
+			PlotWaveform(X, Y, color, " ", new Symbol(SymbolType.None, color));
+		}
+		public void PlotWaveform(double[] X, double[] Y, Color color, string label, Symbol symbol)
+		{
+			if (X == null || X.Length < 1 || Y == null || X.Length != Y.Length) return;
+
+			if (symbol == null) symbol = new Symbol(SymbolType.None, color);
+			float lineWidth = (float)mLineWidth;
+
+
+			// If way too many samples, decimate it down.
+			if (X.Length > MaxSamples)
+			{
+				decimation = X.Length / MaxSamples;
+				double[] temp = new double[X.Length / decimation];
+				for (int i = 0; i < temp.Length; i++)
+					temp[i] = X[i * decimation];
+				X = temp;
+				temp = new double[Y.Length / decimation];
+				for (int i = 0; i < temp.Length; i++)
+					temp[i] = Y[i * decimation];
+				Y = temp;
+			}
+			else
+				decimation = 1;
+
+			if (!ShowLegend) label = "";
+			LineItem li = new LineItem(label, X, Y, color, SymbolType.UserDefined, lineWidth);
+			li.Symbol = symbol;
+
+
+			AddCurve(li);
+		}
         public void AddCurve(CurveItem ci)
         {
             mCurveList.Add(ci);
@@ -435,6 +448,10 @@ namespace ComplexMath
             graph.GraphPane.CurveList = allCurves;
 			
             ScaleAxes();
+			if (ScaleType != AxisScaleType.UserDefined)
+			{
+				this.UpdateAxes();
+			}
         }
         public void Clear()
         {
@@ -539,8 +556,8 @@ namespace ComplexMath
             }
             YScale = yScale;
             YOffset = yOffset;
-            EnableScaling = true;
-            PlotWaveform();
+			EnableScaling = true;
+			PlotWaveform();
         }
 
         private double getNearestPowerOfTwo(double d)
@@ -577,6 +594,8 @@ namespace ComplexMath
 		private void graph_DoubleClick(object sender, EventArgs e)
 		{
 			this.ScaleAxes();
+			this.UpdateAxes();
+			this.Refresh();
 			this.OnDoubleClick(e);
 		}
 
@@ -587,7 +606,7 @@ namespace ComplexMath
 
 		void InitializeContextMenu()
 		{
-			scaleMenu.Text = "Axis Scale Type: " + ScaleType;
+			ScaleType = AxisScaleType.Auto;
 			scaleMenu.DropDownItems.Clear();
 			foreach (AxisScaleType axisType in Enum.GetValues(typeof(AxisScaleType)))
 			{
@@ -601,7 +620,6 @@ namespace ComplexMath
 			ToolStripItem tsi = sender as ToolStripItem;
 			AxisScaleType type = (AxisScaleType)Enum.Parse(typeof(AxisScaleType), tsi.Text);
 			ScaleType = type;
-			scaleMenu.Text = "Axis Scale Type: " + ScaleType;
 		}
 
 		private void graph_ContextMenuBuilder(ZedGraphControl sender, ContextMenuStrip menuStrip, Point mousePt, ZedGraphControl.ContextMenuObjectState objState)
