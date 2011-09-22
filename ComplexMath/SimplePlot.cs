@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using ZedGraph;
 using System.IO;
+using DTALib;
 
 namespace ComplexMath
 {
@@ -16,6 +17,7 @@ namespace ComplexMath
     {
 		public enum AxisScaleType { Auto, Square, UserDefined };
 		private AxisScaleType scaleType = AxisScaleType.Auto;
+		[Parseable]
 		public AxisScaleType ScaleType
 		{
 			get { return scaleType; }
@@ -34,6 +36,7 @@ namespace ComplexMath
         public ICFunction [] ComplexFunctions { get; set; }
 
         private double mAspectRatio = 0;
+		[Parseable]
         public double AspectRatio
         {
             get
@@ -54,25 +57,33 @@ namespace ComplexMath
                                             Color.DarkViolet, Color.DarkGray, Color.SandyBrown, Color.Magenta
                                           };
 
-        //public bool ContinuousUpdate { get; set; }
         public DateTime mStartTime { get; set; }
-
-        public PointF YAxisRange { get; set; }
-        public PointF XAxisRange { get; set; }
+		private PointF yAxis = new PointF(0, 0);
+		[Parseable]
+		public float YAxisMax { get { return yAxis.Y; } set { yAxis.Y = value; } }
+		[Parseable]
+		public float YAxisMin { get { return yAxis.X; } set { yAxis.X = value; } }
+		private PointF xAxis = new PointF(0, 0);
+		[Parseable]
+		public float XAxisMax { get { return xAxis.Y; } set { xAxis.Y = value; } }
+		[Parseable]
+		public float XAxisMin { get { return xAxis.X; } set { xAxis.X = value; } }
 
         private CurveList mCurveList = new CurveList();
 		private CurveList highlightList = new CurveList();
-
+		[Parseable]
         public string YLabel
         {
-            get { return graph.GraphPane.YAxis.Title.Text; }
+            get { return graph.GraphPane.YAxis.Title.Text;  }
             set { graph.GraphPane.YAxis.Title.Text = value; this.Refresh(); }
         }
+		[Parseable]
         public string XLabel
         {
             get { return graph.GraphPane.XAxis.Title.Text; }
             set { graph.GraphPane.XAxis.Title.Text = value; this.Refresh(); }
         }
+		[Parseable]
         public string Title
         {
             get { return graph.GraphPane.Title.Text; }
@@ -84,6 +95,7 @@ namespace ComplexMath
         private double []mYOffset = new double[]{-2,-1,0,1,2};
         public double []YOffset { get { return mYOffset; } set { mYOffset = value; } }
         private bool mEnableScaling = false;
+		[Parseable]
         public bool EnableScaling { get { return mEnableScaling; } set { mEnableScaling = value; } }
 
         public PointPairList[] PlotData
@@ -107,28 +119,32 @@ namespace ComplexMath
             }
         }
 
-
+		[Parseable]
         public bool ShowLegend { get; set; }
         
-        public string AxesString
-        {
-            get { return "" + XAxisRange.X + "," + XAxisRange.Y + "," + YAxisRange.X + "," + YAxisRange.Y; }
-            set
-            {
-                string[] ax = value.Split(new char[] { ',' });
-                try
-                {
-                    if (ax.Length != 4) throw new FormatException();
-                    PointF p = new PointF(float.Parse(ax[0]), float.Parse(ax[1]));
-                    XAxisRange = p;
-                    p = new PointF(float.Parse(ax[2]), float.Parse(ax[3]));
-                    YAxisRange = p;
-					if (XAxisRange.X != 0 || XAxisRange.Y != 0 || YAxisRange.X != 0 || YAxisRange.Y != 0)
-						this.ScaleType = AxisScaleType.UserDefined;
-                }
-                catch (FormatException) { }
-            }
-        }
+        public string GetAxesString()
+        { return "" + XAxisMin + "," + XAxisMax + "," + YAxisMin + "," + YAxisMax; }
+
+		
+		public void SetAxes(string axesString)
+		{
+			string[] ax = axesString.Split(new char[] { ',' });
+			try
+			{
+				if (ax.Length != 4) throw new FormatException();
+				XAxisMin = float.Parse(ax[0]);
+				XAxisMax = float.Parse(ax[1]);
+				YAxisMin = float.Parse(ax[2]);
+				YAxisMax = float.Parse(ax[3]);
+				if (XAxisMin != 0 || XAxisMax != 0 || YAxisMin != 0 || YAxisMax != 0)
+				{
+					this.ScaleType = AxisScaleType.UserDefined;
+				}
+			}
+			catch (FormatException) { }
+		}
+        
+		 
         public string YScaleString
         {
             get {
@@ -170,24 +186,21 @@ namespace ComplexMath
                 }
             }
         }
-        public string ComplexFunctionsString
-        {
-            get
-            {
-                return BaseFunction.FunctionsToString(ComplexFunctions);
-            }
-        }
 
 		public SimplePlot()
 		{
 			InitializeComponent();
 			InitializeContextMenu();
 			graph.IsShowPointValues = true;
-			Console.WriteLine("context; " + graph.ContextMenuStrip);
 			this.BackgroundImageLayout = ImageLayout.None;
-			YAxisRange = new Point(0, 0);
-			XAxisRange = new Point(0, 0);
 		}
+
+
+		public string GetComplexFunctionsString(string seperator)
+		{
+			return BaseFunction.FunctionsToString(ComplexFunctions, seperator);
+		}
+		
 
         private string mChartFilename = null;
         public string ChartImageFilename
@@ -216,9 +229,9 @@ namespace ComplexMath
         public Image ChartBackgroundImage { get { return mBackground; } set { mBackground = value; scaleBackground(); } }
 
 
-		public void SetComplexFunctions(string functionString, NodeLabelCallback FunctionCallback)
+		public void SetComplexFunctions(string functionString, NodeLabelCallback FunctionCallback, string seperator)
 		{
-			string[] ss = functionString.Split(new string[] { ";" }, StringSplitOptions.None);
+			string[] ss = functionString.Split(new string[] { seperator }, StringSplitOptions.None);
 			ICFunction[] cft = new ICFunction[ss.Length];
 			for (int i = 0; i < ss.Length; i++)
 			{
@@ -258,7 +271,7 @@ namespace ComplexMath
 			}
 			else if (ScaleType == AxisScaleType.UserDefined)
 			{
-				double[] points = new double []{ XAxisRange.X, XAxisRange.Y, YAxisRange.X, YAxisRange.Y };
+				double[] points = new double []{ XAxisMin, XAxisMax, YAxisMin, YAxisMax };
 				SetScaleToPoints(points);
 				//AspectRatio = -1;
 			}
@@ -277,7 +290,6 @@ namespace ComplexMath
 		public void UpdateAxes()
 		{
 			this.graph.GraphPane.AxisChange();
-			Console.WriteLine("" + Title + ", update");
 		}
 
 
@@ -447,9 +459,9 @@ namespace ComplexMath
 			allCurves.AddRange(highlightList);
             graph.GraphPane.CurveList = allCurves;
 			
-            ScaleAxes();
 			if (ScaleType != AxisScaleType.UserDefined)
 			{
+				this.ScaleAxes();
 				this.UpdateAxes();
 			}
         }
@@ -526,8 +538,15 @@ namespace ComplexMath
 
         public static SimplePlot GetPlotFromControl(Control con)
         {
-            foreach (Control c in con.Controls)
-                if (c.GetType().Equals(typeof(SimplePlot))) return c as SimplePlot;
+			foreach (Control c in con.Controls)
+			{
+				if (c is SimplePlot) return c as SimplePlot;
+				else if (c is Control)
+				{
+					SimplePlot sp = GetPlotFromControl(c as Control);
+					if (sp != null) return sp;
+				}
+			}
             return null;
         }
 

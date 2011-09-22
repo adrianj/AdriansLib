@@ -24,13 +24,13 @@ namespace ComplexMath
 
     public abstract class BaseFunction : ICFunction
     {
-        public static string FunctionsToString(ICFunction[] ComplexFunctions)
+        public static string FunctionsToString(ICFunction[] ComplexFunctions, string seperator)
         {
             string s = "";
             if (ComplexFunctions == null || ComplexFunctions.Length < 1) return s;
             s += "" + ComplexFunctions[0];
             for (int i = 1; i < ComplexFunctions.Length; i++)
-                s += ";" + ComplexFunctions[i];
+                s += seperator + ComplexFunctions[i];
             return s;
         }
 

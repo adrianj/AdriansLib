@@ -4,8 +4,14 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTALib", "AdriansLib\DTALib.csproj", "{35460A36-4E2A-4086-AF04-565123EB6F22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTALibClient", "AdriansLibClient\DTALibClient.csproj", "{6CA0C62C-E0B8-429B-9218-98B8C49FD7EE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E21DE60F-2B3D-4651-A4F7-28F1D0E5D139} = {E21DE60F-2B3D-4651-A4F7-28F1D0E5D139}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexMath", "ComplexMath\ComplexMath.csproj", "{E21DE60F-2B3D-4651-A4F7-28F1D0E5D139}"
+	ProjectSection(ProjectDependencies) = postProject
+		{35460A36-4E2A-4086-AF04-565123EB6F22} = {35460A36-4E2A-4086-AF04-565123EB6F22}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

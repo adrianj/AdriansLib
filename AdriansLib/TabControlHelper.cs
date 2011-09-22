@@ -11,7 +11,17 @@ namespace DTALib
     {
         private TabControl mTabs = null;
         private List<Panel> mPanels = new List<Panel>();
-        public List<Panel> AllPanels { get { return mPanels; } }
+		public List<Panel> AllPanels
+		{
+			get
+			{
+				List<Panel> ret = new List<Panel>();
+				foreach (Panel pan in mTabs.TabPages)
+					ret.Add(pan);
+				ret.AddRange(mPanels.Except(ret));
+				return ret;
+			}
+		}
 
         private bool mTabLock = false;
         /// <summary>

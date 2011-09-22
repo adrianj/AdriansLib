@@ -2,8 +2,11 @@
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Windows.Forms;
+using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing.Design;
+using System.Reflection;
 
 namespace DTALib
 {
@@ -14,6 +17,8 @@ namespace DTALib
 			return value;
 		}
 	}
+
+
 	public class ObjectCollectionEditor : CollectionEditor
 	{
 		public ObjectCollectionEditor(Type t) : base(t) { }
@@ -21,7 +26,7 @@ namespace DTALib
 		/// Override this method to specify which class types can be instantiated within this collection editor.
 		/// </summary>
 		/// <returns>An array of Types that can be instantiated by the editor</returns>
-		protected virtual Type[] GetTypes()
+		protected virtual IEnumerable<Type> GetTypes()
 		{
 			return new Type[] { typeof(object) };
 		}
@@ -29,7 +34,7 @@ namespace DTALib
 
 		protected override Type[] CreateNewItemTypes()
 		{
-			return GetTypes();
+			return GetTypes().ToArray();
 		}
 
 		protected override object CreateInstance(Type itemType)
@@ -97,7 +102,7 @@ namespace DTALib
 
 		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
 		{
-			ICollection begin = new ArrayList(value as ICollection);
+			System.Collections.ICollection begin = new ArrayList(value as ICollection);
 			ICollection end = base.EditValue(context, provider, value) as ICollection;
 
 			if (!CollectionsEqual(begin, end))
@@ -120,6 +125,57 @@ namespace DTALib
 				if (eA.Current == null && eB.Current == null) continue;
 				if(!eA.Current.Equals(eB.Current)) return false;
 			}
+			return true;
+		}
+
+
+		public static IEnumerable<Type> GetImplementingTypes(Type typeToImplement)
+		{
+			Assembly asm = Assembly.GetExecutingAssembly();
+			List<Type> ret = new List<Type>();
+			ret = ret.Union(GetImplementingTypesInAssembly(typeToImplement, asm)).ToList();
+			asm = Assembly.GetCallingAssembly();
+			if (asm != null)
+				ret = ret.Union(GetImplementingTypesInAssembly(typeToImplement, asm)).ToList();
+
+			return ret;
+		}
+
+		private static System.Collections.Generic.List<Type> GetImplementingTypesInAssembly(Type typeToImplement, Assembly asm)
+		{
+			List<Type> ret = new List<Type>();
+			foreach (Type t in asm.GetTypes())
+			{
+				if (TypeIsSubClassOf(t, typeToImplement) || TypeImplementsInterface(t, typeToImplement))
+					if (HasSimpleConstructor(t))
+						ret.Add(t);
+			}
+			return ret;
+		}
+
+		public static bool TypeImplementsInterface(Type type, Type typeToImplement)
+		{
+			Type[] interfaces = type.FindInterfaces(
+					(typ, obj) => typ == typeToImplement,
+					type);
+			if (interfaces != null && interfaces.Length > 0)
+				return true;
+			return false;
+		}
+
+		public static bool TypeIsSubClassOf(Type type, Type typeToImplement)
+		{
+			if (type.IsInterface) return false;
+			if (type.IsAbstract) return false;
+			if (type == typeToImplement) return true;
+			if (type.IsSubclassOf(typeToImplement)) return true;
+			return false;
+		}
+
+		private static bool HasSimpleConstructor(Type type)
+		{
+			ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
+			if (constructor == null) return false;
 			return true;
 		}
 

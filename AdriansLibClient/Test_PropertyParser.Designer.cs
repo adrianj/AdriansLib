@@ -206,14 +206,11 @@
             this.fileBrowserBox.Filename = "";
             this.fileBrowserBox.Filter = "All Files (*.*)|*.*";
             this.fileBrowserBox.InitialDirectory = "";
-            this.fileBrowserBox.Label = "XML File";
             this.fileBrowserBox.Location = new System.Drawing.Point(3, 6);
-            this.fileBrowserBox.MaxPreviousFiles = 5;
             this.fileBrowserBox.Name = "fileBrowserBox";
             this.fileBrowserBox.SaveFile = false;
             this.fileBrowserBox.Size = new System.Drawing.Size(703, 21);
             this.fileBrowserBox.TabIndex = 0;
-            this.fileBrowserBox.TextBoxReadOnly = true;
             // 
             // Test_PropertyParser
             // 

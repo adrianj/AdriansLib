@@ -18,24 +18,14 @@ namespace DTALib
         public bool SaveFile { get {  return mSaveFile; }
             set {  mSaveFile = value; }
         }
-        public string Filename
-        {
-            get {
-                if (mMaxPreviousFiles == 0)
-                    return textBox.Text;
-                else
-                    return (string)comboBox.Text;
-            }
-            set
-            {
-                textBox.Text = value;
-                updateComboBox(value);
-                FireFilenameChangedEvent();
-            }
-        }
+		public string Filename
+		{
+			get { return textBox.Text; }
+			set { textBox.Text = value; FireFilenameChangedEvent(); }
+		}
         
         public string InitialDirectory { get; set; }
-        public bool TextBoxReadOnly { get { return textBox.ReadOnly; } set { textBox.ReadOnly = value; } }
+        public bool ReadOnly { get { return textBox.ReadOnly; } set { textBox.ReadOnly = value; } }
         public string Filter { get; set; }
         public override string Text
         {
@@ -46,45 +36,6 @@ namespace DTALib
             set
             {
                 Filename = value;
-            }
-        }
-
-        public string Label
-        {
-            get { return label.Text; }
-            set
-            {
-                label.Text = value;
-                int adj = textBox.Left - label.Width - 3;
-                if (label.Text.Length == 0)
-                    adj = textBox.Left;
-                textBox.Left -= adj;
-                comboBox.Left -= adj;
-                textBox.Width += adj;
-                comboBox.Width += adj;
-            }
-        }
-
-        private int mMaxPreviousFiles;
-        public int MaxPreviousFiles
-        {
-            get
-            {
-                return mMaxPreviousFiles;
-            }
-            set
-            {
-                mMaxPreviousFiles = value;
-                if (mMaxPreviousFiles > 0)
-                {
-                    comboBox.Visible = true;
-                    textBox.Visible = false;
-                }
-                else
-                {
-                    comboBox.Visible = false;
-                    textBox.Visible = true;
-                }
             }
         }
 
@@ -103,13 +54,6 @@ namespace DTALib
             }
         }
 
-        public void updateComboBox(string value)
-        {
-            if(!comboBox.Items.Contains(value)) comboBox.Items.Add(value);
-            comboBox.SelectedItem = value;
-            comboBox.Select(0, 0);
-        }
-
         public FileBrowserBox(int maxFiles, bool saveFile) : this("", maxFiles, saveFile) { }
         public FileBrowserBox(int maxFiles) : this("", maxFiles,false) { }
         public FileBrowserBox(string filename) : this(filename, 5,false) { }
@@ -118,9 +62,7 @@ namespace DTALib
         {
             InitializeComponent();
             RestoreDefaults();
-            AttachToolTipToComboBox(comboBox);
             Filename = filename;
-            MaxPreviousFiles = maxFiles;
             SaveFile = saveFile;
         }
 
@@ -129,8 +71,6 @@ namespace DTALib
             InitialDirectory = "";
             Filter = "All Files (*.*)|*.*";
             Filename = "";
-            Label = "";
-            MaxPreviousFiles = 5;
             SaveFile = false;
         }
 
@@ -215,17 +155,15 @@ namespace DTALib
 
         private void textBox_TextChanged(object sender, EventArgs e)
         {
-            if (sender == comboBox)
+            if (sender == textBox)
             {
                 if (TextChanged != null) TextChanged(this, e);
-                //FireFilenameChangedEvent();
             }
         }
 
         private void textBox_Validating(object sender, CancelEventArgs e)
         {
             Filename = textBox.Text;
-            
         }
 
 
@@ -236,17 +174,6 @@ namespace DTALib
             Filename = c.Text;
         }
 
-        private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBox.SelectedItem != null)
-                Filename = comboBox.SelectedItem as string;
-        }
-
-		private void comboBox_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyData == Keys.Enter)
-				Filename = comboBox.Text;
-		}
     }
 
 }
