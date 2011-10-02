@@ -15,7 +15,7 @@ namespace ComplexMath
 {
     public partial class SimplePlot : UserControl
     {
-		public enum AxisScaleType { Auto, Square, UserDefined };
+		public enum AxisScaleType { Auto, UserDefined };
 		private AxisScaleType scaleType = AxisScaleType.Auto;
 		[Parseable]
 		public AxisScaleType ScaleType
@@ -263,7 +263,7 @@ namespace ComplexMath
         public void ScaleAxes()
 		{
 			GraphPane pane = graph.GraphPane;
-			if (ScaleType == AxisScaleType.Auto)
+			if (ScaleType == AxisScaleType.Auto || XAxisMin == XAxisMax || YAxisMin == YAxisMax)
 			{
 				double[] points = GetCurveMinMax();
 				SetScaleToPoints(points);
@@ -274,14 +274,6 @@ namespace ComplexMath
 				double[] points = new double []{ XAxisMin, XAxisMax, YAxisMin, YAxisMax };
 				SetScaleToPoints(points);
 				//AspectRatio = -1;
-			}
-			else if (ScaleType == AxisScaleType.Square)
-			{
-				double[] points = GetCurveMinMax();
-				double max = Math.Max(points[1], points[3]);
-				double min = Math.Min(points[0], points[2]);
-				SetScaleToPoints(new double[] { min, max, min, max });
-				//AspectRatio = 1;
 			}
 			pane.XAxis.MajorGrid.IsVisible = true;
 			pane.YAxis.MajorGrid.IsVisible = true;
@@ -318,6 +310,10 @@ namespace ComplexMath
 					if (pp.Y < minY) minY = pp.Y;
 				}
 			}
+			double yDiff = maxY - minY;
+			if (yDiff == 0) yDiff = 1;
+			minY = minY - yDiff / 10;
+			maxY = maxY + yDiff / 10;
 			return new double[] { minX, maxX,minY, maxY };
 		}
 

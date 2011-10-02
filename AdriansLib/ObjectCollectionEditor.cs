@@ -95,7 +95,7 @@ namespace DTALib
 			base.DestroyInstance(instance);			
 		}
 
-		private ICollection GetCollection()
+		protected ICollection GetCollection()
 		{
 			return Context.PropertyDescriptor.GetValue(Context.Instance) as ICollection;
 		}

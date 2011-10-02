@@ -77,6 +77,16 @@
     <Compile Include="FileBrowserBox.Designer.cs">
       <DependentUpon>FileBrowserBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SplashScreen.cs" />
+    <Compile Include="Forms\SplashScreenForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SplashScreenForm.designer.cs">
+      <DependentUpon>SplashScreenForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SplashScreenOptions.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GenericTypeConverter.cs" />
     <Compile Include="ImageGrid.cs">
       <SubType>UserControl</SubType>
@@ -107,6 +117,11 @@
       <DependentUpon>ProgressBarForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="PropertyParser.cs" />
     <Compile Include="TabControlHelper.cs" />
     <Compile Include="Tester.cs" />
@@ -139,6 +154,9 @@
     <EmbeddedResource Include="FileBrowserBox.resx">
       <DependentUpon>FileBrowserBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SplashScreenForm.resx">
+      <DependentUpon>SplashScreenForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ImageGrid.resx">
       <DependentUpon>ImageGrid.cs</DependentUpon>
     </EmbeddedResource>
@@ -151,12 +169,23 @@
     <EmbeddedResource Include="ProgressBarForm.resx">
       <DependentUpon>ProgressBarForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestForm.resx">
       <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TextInputDialog.resx">
       <DependentUpon>TextInputDialog.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NZDF_Logo2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NZDF_Logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

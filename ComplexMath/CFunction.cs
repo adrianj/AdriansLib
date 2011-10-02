@@ -356,6 +356,31 @@ namespace ComplexMath
             return ret;
         }
     }
+
+	public class Counter : BaseFunction
+	{
+		int currentValue = 0;
+		int terminalCount = int.MaxValue;
+
+		protected override CDoubleArray Eval(List<CDoubleArray> inList, List<string> functionNames)
+		{
+			if (inList != null && inList.Count > 0 && inList[0] != null && inList[0].Length > 0)
+				terminalCount = RestrictDoubleToIntRange(inList[0][0].R);
+			double ret = (double)currentValue;
+			currentValue = (currentValue + 1) % terminalCount;
+			return new CDoubleArray(ret);
+		}
+
+		int RestrictDoubleToIntRange(double d)
+		{
+			if (d > int.MaxValue)
+				return int.MaxValue;
+			if (d < 1)
+				return 1;
+			return (int)d;
+		}
+	}
+
     public class Concat : BaseFunction
     {
         protected override CDoubleArray Eval(List<CDoubleArray> inList, List<string> functionNames)

@@ -105,6 +105,7 @@
 			// 
 			this.nameLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.nameLabel.AutoSize = true;
+			this.tableLayoutPanel1.SetColumnSpan(this.nameLabel, 5);
 			this.nameLabel.Location = new System.Drawing.Point(3, 3);
 			this.nameLabel.Margin = new System.Windows.Forms.Padding(3);
 			this.nameLabel.Name = "nameLabel";
@@ -128,6 +129,7 @@
 			// 
 			this.descLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.descLabel.AutoSize = true;
+			this.tableLayoutPanel1.SetColumnSpan(this.descLabel, 5);
 			this.descLabel.Location = new System.Drawing.Point(3, 22);
 			this.descLabel.Margin = new System.Windows.Forms.Padding(3);
 			this.descLabel.Name = "descLabel";
@@ -145,6 +147,7 @@
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "ExceptionRetryDialog";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "ExceptionRetryDialog";
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();

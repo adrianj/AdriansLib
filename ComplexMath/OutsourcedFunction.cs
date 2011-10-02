@@ -36,50 +36,6 @@ namespace ComplexMath
 
             ConstantFunction cf = new ConstantFunction(new CDoubleArray(d), label);
             return cf;
-            /*
-            double start = 0;
-            double step = 1;
-            string[] split = function.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-            if (!double.TryParse(split[0], out start))
-            {
-                return null;
-            }
-            double p1 = 0;
-            double p2 = 0;
-            double end = start;
-            if (split.Length >= 2)
-            {
-                if (!double.TryParse(split[1], out p1))
-                    return null;
-            }
-            if (split.Length >= 3)
-            {
-                if (!double.TryParse(split[2], out p2))
-                   return null;
-            }
-
-            if (split.Length == 3)
-            {
-                step = p1;
-                end = p2;
-            }
-            else if (split.Length == 2)
-            {
-                end = p1;
-            }
-            List<double> ret = new List<double>();
-            ret.Add(start);
-            while (step != 0)
-            {
-                start = start + step;
-                if (step < 0 && start < end) break;
-                if (step > 0 && start > end) break;
-                ret.Add(start);
-            }
-
-            ConstantFunction cf = new ConstantFunction(new CDoubleArray(ret.ToArray()), label);
-            return cf;
-             */
         }
     }
     public class OutsourcedFunction : BaseFunction
@@ -96,6 +52,8 @@ namespace ComplexMath
         protected override CDoubleArray Eval(List<CDoubleArray> a, List<string> functionNames)
         {
             if (AlreadyEvaluated) return mEvalResult;
+			if (Callback == null)
+				return null;
             mEvalResult = Callback(Name);
             AlreadyEvaluated = true;
             return mEvalResult;
@@ -121,6 +79,14 @@ namespace ComplexMath
             OutsourcedFunction r = new OutsourcedFunction(name, callBack);
             return r;
         }
+
+		public static void SetCallbackFunction(ICFunction function, NodeLabelCallback callback)
+		{
+			if (function is OutsourcedFunction)
+				(function as OutsourcedFunction).Callback = callback;
+			foreach (ICFunction child in function.Children)
+				SetCallbackFunction(child, callback);
+		}
     }
     /// <summary>
     /// This function is a variable.
@@ -143,7 +109,7 @@ namespace ComplexMath
             }
             set
             {
-                if (value.Count >= 1 && value[0].GetType().Equals(typeof(OutsourcedFunction)))
+                if (value.Count >= 1 && value[0] is OutsourcedFunction)
                 {
                     OutsourcedFunction osf = value[0] as OutsourcedFunction;
                     osf.Callback = Callback;
@@ -161,12 +127,5 @@ namespace ComplexMath
             return Children[1].Eval();
         }
 
-        /*
-        protected override CDoubleArray Eval(CDoubleArray a, CDoubleArray b)
-        {
-            if (Children.Count < 2) return null;
-            return Children[1].Eval();
-        }
-         */
     }
 }

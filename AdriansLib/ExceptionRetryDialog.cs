@@ -13,6 +13,8 @@ namespace DTALib
 	{
 		public string ExceptionName { get { return this.Text; } set { this.Text = value; this.nameLabel.Text = value; } }
 
+
+
 		public ExceptionRetryDialog()
 		{
 			this.DialogResult = System.Windows.Forms.DialogResult.Abort;
@@ -26,13 +28,19 @@ namespace DTALib
 			this.stackTraceBox.Text = "" + ex;
 		}
 
-		public static DialogResult ShowDialog(Exception ex) { return ShowDialog(ex, ""); }
-		public static DialogResult ShowDialog(Exception ex, string caption)
+		public static DialogResult ShowDialog(Exception ex) { return ShowDialog(ex, "", DialogResult.Retry | DialogResult.Ignore | DialogResult.Abort); }
+		public static DialogResult ShowDialog(Exception ex, string caption, DialogResult enabledButtons)
 		{
 			ExceptionRetryDialog dlg = new ExceptionRetryDialog();
 			dlg.PopulateWithException(ex);
 			if (!string.IsNullOrWhiteSpace(caption))
 				dlg.ExceptionName = caption;
+			if (!enabledButtons.HasFlag(DialogResult.Abort))
+				dlg.abortButton.Enabled = false;
+			if (!enabledButtons.HasFlag(DialogResult.Ignore))
+				dlg.ignoreButton.Enabled = false;
+			if (!enabledButtons.HasFlag(DialogResult.Retry))
+				dlg.retryButton.Enabled = false;
 			return dlg.ShowDialog();
 		}
 
