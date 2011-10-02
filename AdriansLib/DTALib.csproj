@@ -123,6 +123,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="PropertyParser.cs" />
+    <Compile Include="RuntimeCompiler.cs" />
     <Compile Include="TabControlHelper.cs" />
     <Compile Include="Tester.cs" />
     <Compile Include="TestForm.cs">

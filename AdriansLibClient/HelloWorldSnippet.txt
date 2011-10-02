@@ -1,0 +1,19 @@
+﻿public interface Test
+{
+	void Write();
+}
+
+public class HelloWorldSnippet : Test
+{
+	int state = 0;
+
+	public HelloWorldSnippet()
+	{
+		Write();
+	}
+
+	public void Write()
+	{
+		Console.WriteLine("Hello World");
+	}
+}
