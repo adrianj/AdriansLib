@@ -46,14 +46,15 @@ namespace ComplexMath
             imag = new double[length];
         }
 
-        public CDoubleArray(CDouble[] cd)
+        public CDoubleArray(IEnumerable<CDouble> cd)
         {
-            real = new double[cd.Length];
-            imag = new double[cd.Length];
-            for (int i = 0; i < cd.Length; i++)
+            real = new double[cd.Count()];
+			imag = new double[cd.Count()];
+			int i = 0;
+			foreach(CDouble cdub in cd)
             {
-                real[i] = cd[i].R;
-                imag[i] = cd[i].I;
+				real[i] = cdub.R;
+				imag[i] = cdub.I;
             }
         }
         /*
@@ -79,12 +80,14 @@ namespace ComplexMath
             real[0] = r;
             imag[0] = i;
         }
-        public CDoubleArray(double[] r) : this(r, null) { }
-        
-        public CDoubleArray(double[] r, double[] i)
+        public CDoubleArray(IEnumerable<double> r) : this(r, null) { }
+
+		public CDoubleArray(IEnumerable<double> r, IEnumerable<double> i)
         {
-            real = r;
-            imag = i;
+			if(r != null)
+            real = r.ToArray();
+			if(i != null)
+            imag = i.ToArray();
         }
          
         /*

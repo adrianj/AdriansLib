@@ -275,12 +275,16 @@ namespace DTALib
 		private object CreateInstance(Type type) { return CreateInstance(type, new object[0]); }
 		private object CreateInstance(Type type, object [] args)
 		{
-			if (type == null) return null;
-			if (type == typeof(Array))
-				return Array.CreateInstance(type.GetElementType(), args.Cast<int>().ToArray());
-			if (type == typeof(string))
-				return "";
-			return Activator.CreateInstance(type,args);
+			try
+			{
+				if (type == null) return null;
+				if (type == typeof(Array))
+					return Array.CreateInstance(type.GetElementType(), args.Cast<int>().ToArray());
+				if (type == typeof(string))
+					return "";
+				return Activator.CreateInstance(type, args);
+			}
+			catch (TargetInvocationException tie) { Console.WriteLine("" + tie.Message + Environment.NewLine + tie.StackTrace); return null; }
 		}
 
         public object ReadArrayFromXml(Array target, Type arrayType)
@@ -292,6 +296,7 @@ namespace DTALib
             if (target.Length != len)
             {
                 ret = CreateInstance(arrayType, new object[]{len}) as Array;
+				if (ret == null) return target;
                 Array.Copy(target, ret, Math.Min(ret.Length,target.Length));
             }
             for (int i = 0; i < len; i++)
@@ -312,6 +317,8 @@ namespace DTALib
             int.TryParse(lens, out len);
 			if (parent == null)
 				parent = (IList)CreateInstance(listType);
+			if (parent == null)
+				return parent;
 			while (parent.Count > len)
 				parent.RemoveAt(parent.Count - 1);
             for (int i = 0; i < len; i++)

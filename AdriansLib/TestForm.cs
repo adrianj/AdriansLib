@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
-using NUnit.Framework;
 
 namespace DTALib
 {
@@ -87,6 +86,7 @@ namespace DTALib
 
 		bool IsTestFixture(Type type)
 		{
+			/*
 			foreach (object o in type.GetCustomAttributes(false))
 			{
 				if (o.GetType() == typeof(TestFixtureAttribute))
@@ -94,6 +94,7 @@ namespace DTALib
 					return true;
 				}
 			}
+			 */
 			return false;
 		}
 

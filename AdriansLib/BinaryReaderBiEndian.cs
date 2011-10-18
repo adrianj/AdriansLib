@@ -110,7 +110,6 @@ namespace DTALib
 			try
 			{
 				string s = textReader.ReadLine();
-				Console.WriteLine("" + s);
 				return s;
 			}
 			catch (Exception e) { Console.Write("" + e); throw; }

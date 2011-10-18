@@ -20,7 +20,8 @@ namespace DTALib
 
 		public string AssemblyName { get { return parameters.OutputAssembly; } set { parameters.OutputAssembly = value; } }
 
-		public string SourceCode { get; set; }
+		private List<string> sourceCode = new List<string>();
+		public List<string> SourceCode { get { return sourceCode; } set { sourceCode = value; } }
 
 		public System.Collections.Specialized.StringCollection ReferencedAssemblies { get { return parameters.ReferencedAssemblies; } }
 
@@ -50,24 +51,35 @@ namespace DTALib
 			this.ReferencedAssemblies.AddRange(asms.ToArray());
 		}
 
-		public Assembly CompileSourceFile()
+		public Assembly CompileSource()
 		{
 			appendedLines = 0;
 			return CompileSource(this.SourceCode);
 		}
 
-		public Assembly CompileSourceSnippet()
+		public Assembly CompileSourceSnippets()
+		{
+			List<string> code = new List<string>();
+			foreach (string originalCode in this.SourceCode)
+			{
+				string sc = BuildCodeFromSnippets(originalCode);
+				code.Add(sc);
+			}
+			return CompileSource(code);
+		}
+
+		private string BuildCodeFromSnippets(string originalCode)
 		{
 			List<string> usings = GetReferencedNamespaces();
 			StringBuilder source = new StringBuilder();
 			foreach (string names in usings)
 				source.AppendLine("using " + names + ";");
 			source.AppendLine("namespace " + this.AssemblyName + "\n{");
-			source.Append(this.SourceCode);
+			source.Append(originalCode);
 			source.AppendLine("}");
-			Console.WriteLine(source.ToString());
 			appendedLines = usings.Count + 2;
-			return CompileSource(source.ToString());
+			string sc = source.ToString();
+			return sc;
 		}
 
 		public List<string> GetReferencedNamespaces()
@@ -104,13 +116,9 @@ namespace DTALib
 		}
 
 
-		Assembly CompileSource(string source)
+		Assembly CompileSource(IEnumerable<string> source)
 		{
-			foreach (string s in parameters.ReferencedAssemblies)
-			{
-				Console.WriteLine("referenced: " + s);
-			}
-			CompilerResults results = compiler.CompileAssemblyFromSource(parameters, source);
+			CompilerResults results = compiler.CompileAssemblyFromSource(parameters, source.ToArray());
 			if (results.Errors.HasErrors)
 			{
 				string err = FormatErrorString(results);

@@ -31,7 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -53,6 +52,8 @@
     </Compile>
     <Compile Include="BinaryReaderBiEndian.cs" />
     <Compile Include="BinaryWriterBiEndian.cs" />
+    <Compile Include="CompressionFactory.cs" />
+    <Compile Include="CompressionList.cs" />
     <Compile Include="DebuggingTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -76,6 +77,16 @@
     </Compile>
     <Compile Include="FileBrowserBox.Designer.cs">
       <DependentUpon>FileBrowserBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFunctions.cs" />
+    <Compile Include="Forms\SingleControlForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SingleControlForm.designer.cs">
+      <DependentUpon>SingleControlForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\SplashScreen.cs" />
     <Compile Include="Forms\SplashScreenForm.cs">
@@ -124,6 +135,7 @@
     </Compile>
     <Compile Include="PropertyParser.cs" />
     <Compile Include="RuntimeCompiler.cs" />
+    <Compile Include="StaticFunctions.cs" />
     <Compile Include="TabControlHelper.cs" />
     <Compile Include="Tester.cs" />
     <Compile Include="TestForm.cs">
@@ -154,6 +166,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FileBrowserBox.resx">
       <DependentUpon>FileBrowserBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormDialog.resx">
+      <DependentUpon>FormDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SingleControlForm.resx">
+      <DependentUpon>SingleControlForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SplashScreenForm.resx">
       <DependentUpon>SplashScreenForm.cs</DependentUpon>

@@ -15,19 +15,22 @@ namespace AdriansLibClient
 		{
 			string ret = "";
 			ret += TestCompileFromSource(ref failCount, ref testCount) + Environment.NewLine;
-			ret += TestCompileFromSnippet(ref failCount, ref testCount) + Environment.NewLine;
+			ret += TestCompileFromSnippets(ref failCount, ref testCount) + Environment.NewLine;
 			return ret;
 		}
 
 		private string TestCompileFromSource(ref int failCount, ref int testCount)
 		{
 			RuntimeCompiler compiler = new RuntimeCompiler();
+			List<string> source = new List<string>();
 			using (StreamReader reader = new StreamReader(new FileStream("HelloWorld.cs", FileMode.Open)))
-				compiler.SourceCode = reader.ReadToEnd();
+				source.Add(reader.ReadToEnd());
+
+			compiler.SourceCode = source;
 			testCount++;
 			Assembly asm = null;
 			string ret = "";
-			try { asm = compiler.CompileSourceFile(); }
+			try { asm = compiler.CompileSource(); }
 			catch (ArgumentException ae) { failCount++; ret += ae + "\n"; }
 			ret += TestAssembly(ref failCount, ref testCount, asm);
 			if (string.IsNullOrWhiteSpace(ret))
@@ -35,17 +38,20 @@ namespace AdriansLibClient
 			return ret;
 		}
 
-		private string TestCompileFromSnippet(ref int failCount, ref int testCount)
+		private string TestCompileFromSnippets(ref int failCount, ref int testCount)
 		{
 			RuntimeCompiler compiler = new RuntimeCompiler();
 			string assemblyName = "TestAssembly";
 			compiler.AssemblyName = assemblyName;
-			using (StreamReader reader = new StreamReader(new FileStream("HelloWorldSnippet.txt", FileMode.Open)))
-				compiler.SourceCode = reader.ReadToEnd();
+			List<string> source = new List<string>();
+			using (StreamReader reader = new StreamReader(new FileStream("HelloWorld.cs", FileMode.Open)))
+				source.Add(reader.ReadToEnd());
+
+			compiler.SourceCode = source;
 			testCount++;
 			Assembly asm = null;
 			string ret = "";
-			try { asm = compiler.CompileSourceSnippet(); }
+			try { asm = compiler.CompileSourceSnippets(); }
 			catch (ArgumentException ae) { failCount++; ret += ae + "\n"; }
 			ret += TestAssembly(ref failCount, ref testCount, asm);
 			if (string.IsNullOrWhiteSpace(ret))
