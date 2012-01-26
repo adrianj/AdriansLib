@@ -35,6 +35,13 @@ namespace DTALib
 			parameters.OutputAssembly = "RuntimeCompiler";
 		}
 
+		public void AddTypeToAssembly(Type type)
+		{
+			string loc = type.Assembly.Location;
+			if (!string.IsNullOrWhiteSpace(loc) && !ReferencedAssemblies.Contains(loc))
+				ReferencedAssemblies.Add(loc);
+		}
+
 		void AddRunningAssemblies()
 		{
 			List<string> asms = new List<string>();
