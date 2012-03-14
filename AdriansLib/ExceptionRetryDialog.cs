@@ -24,7 +24,7 @@ namespace DTALib
 		public void PopulateWithException(Exception ex)
 		{
 			this.ExceptionName = ex.GetType().Name;
-			this.descLabel.Text = ex.Message;
+			this.descLabel.Text = ""+ex.TargetSite;
 			this.stackTraceBox.Text = "" + ex;
 		}
 

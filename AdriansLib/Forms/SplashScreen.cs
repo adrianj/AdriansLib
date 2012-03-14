@@ -78,6 +78,7 @@ namespace DTALib.Forms
         /// </summary>
         public static void CloseSplashScreen()
 		{
+			if (callingForm == null) return;
 			callingForm.Show();
 			if (sf != null)
 			{

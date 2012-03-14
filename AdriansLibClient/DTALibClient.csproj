@@ -51,6 +51,12 @@
       <SubType>Code</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Test_TextInputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Test_TextInputDialog.Designer.cs">
+      <DependentUpon>Test_TextInputDialog.cs</DependentUpon>
+    </Compile>
     <Content Include="HelloWorldSnippet.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -104,6 +110,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Test_TabHelper.resx">
       <DependentUpon>Test_TabHelper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Test_TextInputDialog.resx">
+      <DependentUpon>Test_TextInputDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
