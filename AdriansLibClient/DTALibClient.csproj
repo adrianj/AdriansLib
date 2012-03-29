@@ -45,12 +45,18 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph">
+      <HintPath>..\..\..\Libraries\zedgraph_dll_v515\zedgraph_dll_v5.1.5\ZedGraph.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HelloWorld.cs">
       <SubType>Code</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="TestCloneableObject.cs" />
+    <Compile Include="TestCsvWriter.cs" />
+    <Compile Include="Test_OptionsDialog.cs" />
     <Compile Include="Test_TextInputDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,6 +102,10 @@
     <ProjectReference Include="..\AdriansLib\DTALib.csproj">
       <Project>{35460A36-4E2A-4086-AF04-565123EB6F22}</Project>
       <Name>AdriansLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ComplexMath\ComplexMath.csproj">
+      <Project>{E21DE60F-2B3D-4651-A4F7-28F1D0E5D139}</Project>
+      <Name>ComplexMath</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

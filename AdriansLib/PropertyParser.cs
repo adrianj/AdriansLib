@@ -52,7 +52,7 @@ namespace DTALib
 			using (XmlWriter writer = XmlWriter.Create(filename))
 			{
 				writer.WriteStartDocument();
-				writer.WriteComment("XML Generated based on code structure. Do not manually edit structure as this will likely cause a parsing error.");
+				writer.WriteComment("XML Generated based on code structure. Do not manually edit structure as this will likely cause a parsing error.\n");
 				writer.WriteStartElement(obj.GetType().FullName);
 				WriteObjectToXml(writer, "Root", obj, obj.GetType());
 				writer.WriteEndElement();
@@ -78,7 +78,8 @@ namespace DTALib
                     object o = a.GetValue(i);
                     WriteObjectToXml(writer, "" + i, o, a.GetType().GetElementType());
                 }
-                writer.WriteEndElement();
+				writer.WriteEndElement();
+				writer.WriteWhitespace("\n");
                 return;
             }
             else if (typ.GetInterface("System.Collections.IList") != null)
@@ -92,7 +93,8 @@ namespace DTALib
                     if (o == null) WriteObjectToXml(writer, "" + i, null, null);
                     else WriteObjectToXml(writer, "" + i, o, o.GetType());
                 }
-                writer.WriteEndElement();
+				writer.WriteEndElement();
+				writer.WriteWhitespace("\n");
                 return;
             }
             else
@@ -102,6 +104,7 @@ namespace DTALib
                 {
 					writer.WriteStartElement("Class");
 					writer.WriteElementString("Type", typ.AssemblyQualifiedName);
+					writer.WriteWhitespace("\n");
                     foreach (PropertyInfo p in props)
                     {
                         MethodInfo getter = p.GetGetMethod();
@@ -111,8 +114,10 @@ namespace DTALib
 						//writer.WriteElementString("Type", p.PropertyType.AssemblyQualifiedName);
                         WriteObjectToXml(writer, p.Name, val, p.PropertyType);
                         writer.WriteEndElement();
+						writer.WriteWhitespace("\n");
                     }
-                    writer.WriteEndElement();
+					writer.WriteEndElement();
+					writer.WriteWhitespace("\n");
                     return;
 				}
 				TypeConverter converter = TypeDescriptor.GetConverter(obj);
@@ -208,6 +213,7 @@ namespace DTALib
 		{
 			using (PropertyReader reader = new PropertyReader(filename))
 			{
+				
 				if (reader.FileType == null || !reader.FileType.Equals(target.GetType().FullName))
 					throw new ArgumentException("Target object type does not match file type");
 				reader.ReadObjectFromXml(target, target.GetType());

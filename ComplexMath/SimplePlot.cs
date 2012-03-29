@@ -33,7 +33,6 @@ namespace ComplexMath
 		private int maxSamples = 10000;
 		public int MaxSamples { get { return maxSamples; } set { maxSamples = value; } }
 		private int decimation = 1;
-        public ICFunction [] ComplexFunctions { get; set; }
 
         private double mAspectRatio = 0;
 		[Parseable]
@@ -69,8 +68,8 @@ namespace ComplexMath
 		[Parseable]
 		public float XAxisMin { get { return xAxis.X; } set { xAxis.X = value; } }
 
-        private CurveList mCurveList = new CurveList();
-		private CurveList highlightList = new CurveList();
+        protected CurveList mCurveList = new CurveList();
+		protected CurveList highlightList = new CurveList();
 		[Parseable]
         public string YLabel
         {
@@ -104,6 +103,7 @@ namespace ComplexMath
                 PointPairList []ret = new PointPairList[graph.GraphPane.CurveList.Count];
                 for (int i = 0; i < ret.Length; i++)
                     ret[i] = graph.GraphPane.CurveList[i].Points as PointPairList;
+				
                 return ret;
             }
         }
@@ -196,10 +196,6 @@ namespace ComplexMath
 		}
 
 
-		public string GetComplexFunctionsString(string seperator)
-		{
-			return BaseFunction.FunctionsToString(ComplexFunctions, seperator);
-		}
 		
 
         private string mChartFilename = null;
@@ -229,16 +225,6 @@ namespace ComplexMath
         public Image ChartBackgroundImage { get { return mBackground; } set { mBackground = value; scaleBackground(); } }
 
 
-		public void SetComplexFunctions(string functionString, NodeLabelCallback FunctionCallback, string seperator)
-		{
-			string[] ss = functionString.Split(new string[] { seperator }, StringSplitOptions.None);
-			ICFunction[] cft = new ICFunction[ss.Length];
-			for (int i = 0; i < ss.Length; i++)
-			{
-				cft[i] = BaseFunction.CreateNode(ss[i], FunctionCallback);
-			}
-			ComplexFunctions = cft;
-		}
         private void scaleBackground()
         {
             if (mBackground != null)
@@ -318,39 +304,9 @@ namespace ComplexMath
 		}
 
 
-        public void PlotWaveform()
-        {
-            ICFunction[] cft = ComplexFunctions;
-            if (cft == null) return;
-            int nPlots = 0;
-            foreach (ICFunction icf in cft) if (icf.Name.Equals("Plot")) nPlots++;
-            double[][]x = new double[nPlots][];
-            double[][]y = new double[nPlots][];
-            Color[] colors = new Color[nPlots];
-            ZedGraph.Symbol[] symbols = new ZedGraph.Symbol[nPlots];
-            string[] labels = new string[nPlots];
-            nPlots = 0;
-            for (int i = 0; i < cft.Length; i++)
-            {
-                CDoubleArray cd = cft[i].Eval();
-                if (cft[i].GetType().Name.Equals("Plot"))
-                {
-                    Plot plot = cft[i] as Plot;
-                    if (cd != null)
-                    {
-                        x[nPlots] = cd.Real;
-                        y[nPlots] = cd.Imag;
-                        labels[nPlots] = plot.Legend;
-                        symbols[nPlots] = GraphSymbol.GetSymbol(plot.SymbolString, plot.LineColor);
-                        colors[nPlots] = plot.LineColor;
-                    }
-                    nPlots++;
-                }
-            }
-            PlotWaveform(x, y, labels.ToArray(), symbols, colors);
-        }
 
-        private double mLineWidth = 3;
+
+        protected double mLineWidth = 3;
         /// <summary>
         /// The linewidth as a percentage of the maximum of the plot's height or width.
         /// Minimum width is 3.
@@ -385,7 +341,12 @@ namespace ComplexMath
         {
             PlotWaveform(X, Y, null,null,null);
         }
-        public void PlotWaveform(double[][] X, double[][] Y, string [] labels, Symbol[] symbols, Color [] colors)
+		public void PlotWaveform(double[][] X, double[][] Y, string[] labels = null, Color[] colors = null)
+		{
+			PlotWaveform(X, Y, labels, colors, null);
+		}
+
+		public void PlotWaveform(double[][] X, double[][] Y, string[] labels = null, Color[] colors = null, Symbol[] symbols = null)
         {
             if (X.Length < 1 || Y.Length < 1) return;
             Clear();
@@ -461,7 +422,7 @@ namespace ComplexMath
 				this.UpdateAxes();
 			}
         }
-        public void Clear()
+        public virtual void Clear()
         {
             mCurveList = new CurveList();
         }
@@ -546,63 +507,7 @@ namespace ComplexMath
             return null;
         }
 
-        public void AutoGenerateScaleAndOffsets()
-        {
-            EnableScaling = false;
-            PlotWaveform();
-            PointPairList[] data = PlotData;
-            double[] yScale = new double[data.Length];
-            double[] yOffset = new double[data.Length];
-            for (int i = 0; i < data.Length; i++)
-            {
-                // find max and min of data
-                double max = double.MinValue;
-                double min = double.MaxValue;
-                for (int k = 0; k < data[i].Count; k++)
-                {
-                    if (data[i][k].Y > max) max = data[i][k].Y;
-                    if (data[i][k].Y < min) min = data[i][k].Y;
-                }
-                if (max == min) max = min + 1;
-                double diff = max - min;
-                diff = getNearestPowerOfTwo(1/diff);
-                yScale[i] = diff;
-                yOffset[i] = i;
-            }
-            YScale = yScale;
-            YOffset = yOffset;
-			EnableScaling = true;
-			PlotWaveform();
-        }
 
-        private double getNearestPowerOfTwo(double d)
-        {
-            if (double.IsInfinity(d)) return d;
-            if (double.IsNaN(d)) return d;
-            if (d == double.MaxValue) return d;
-            if (d == double.MinValue) return d;
-            double s = 5;
-            double n = 1;
-            if (Math.Abs(d) < 1)
-            {
-                while (Math.Abs(n) > Math.Abs(d))
-                {
-                    if (s == 2) s = 5; else s = 2;
-                    n /= s;
-                }
-                return n;
-            }
-            if (Math.Abs(d) > 1)
-            {
-                while (Math.Abs(n) <= Math.Abs(d))
-                {
-                    if (s == 2) s = 5; else s = 2;
-                    n *= s;
-                }
-                return n/s;
-            }
-            return 1;
-        }
 
 		
 
@@ -639,7 +544,15 @@ namespace ComplexMath
 
 		private void graph_ContextMenuBuilder(ZedGraphControl sender, ContextMenuStrip menuStrip, Point mousePt, ZedGraphControl.ContextMenuObjectState objState)
 		{
+			menuStrip.Items.Insert(2,CreateExportMenuItem());
 			menuStrip.Items.Add(scaleMenu);
+		}
+
+		ToolStripButton CreateExportMenuItem()
+		{
+			ToolStripButton button = new ToolStripButton("Export Data as ...");
+			button.Click += (o, e) => { DataExporter.QueryUserAndSaveAs(graph.GraphPane.CurveList); };
+			return button;
 		}
 
 		#endregion

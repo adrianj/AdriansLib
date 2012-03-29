@@ -124,11 +124,24 @@ namespace DTALib
 
         public void Write(byte b) { writer.Write(b); }
         public void Write(sbyte b) { writer.Write(b); }
+		[Obsolete("Use WriteRange(byte) instead.")]
         public void Write(byte[] b) { writer.Write(b); }
         public void Write(char c) { writer.Write(c); }
+		[Obsolete("Use WriteRange(char) instead.")]
         public void Write(char[] c) { writer.Write(c); }
 
-        public void Write(string s) { Write(s.ToCharArray()); }
+		public void WriteRange(byte[] b) { writer.Write(b); }
+		public void WriteRange(char[] b) { writer.Write(b); }
+		public void WriteRange(int[] ir) { foreach (int i in ir) Write(i); }
+		public void WriteRange(uint[] ir) { foreach (uint i in ir) Write(i); }
+		public void WriteRange(short[] ir) { foreach (short i in ir) Write(i); }
+		public void WriteRange(ushort[] ir) { foreach (ushort i in ir) Write(i); }
+		public void WriteRange(long[] ir) { foreach (long i in ir) Write(i); }
+		public void WriteRange(ulong[] ir) { foreach (ulong i in ir) Write(i); }
+		public void WriteRange(float[] ir) { foreach (float i in ir) Write(i); }
+		public void WriteRange(double[] ir) { foreach (double i in ir) Write(i); }
+
+        public void Write(string s) { WriteRange(s.ToCharArray()); }
 		public void WriteLine(string s)
 		{
 			if (LineEnding == LineEndingType.Posix) Write(s + "\n");
