@@ -44,13 +44,13 @@
 			this.propertyGrid1.Location = new System.Drawing.Point(3, 16);
 			this.propertyGrid1.Name = "propertyGrid1";
 			this.propertyGrid1.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-			this.propertyGrid1.Size = new System.Drawing.Size(303, 362);
+			this.propertyGrid1.Size = new System.Drawing.Size(444, 362);
 			this.propertyGrid1.TabIndex = 1;
 			// 
 			// okButton
 			// 
 			this.okButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.okButton.Location = new System.Drawing.Point(39, 5);
+			this.okButton.Location = new System.Drawing.Point(75, 5);
 			this.okButton.Name = "okButton";
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 2;
@@ -72,14 +72,14 @@
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(309, 33);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(450, 33);
 			this.tableLayoutPanel1.TabIndex = 3;
 			// 
 			// cancelButton
 			// 
 			this.cancelButton.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(194, 5);
+			this.cancelButton.Location = new System.Drawing.Point(300, 5);
 			this.cancelButton.Name = "cancelButton";
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 4;
@@ -102,7 +102,7 @@
 			this.groupBox1.Controls.Add(this.propertyGrid1);
 			this.groupBox1.Location = new System.Drawing.Point(138, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(309, 381);
+			this.groupBox1.Size = new System.Drawing.Size(450, 381);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "groupBox1";
@@ -113,7 +113,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cancelButton;
-			this.ClientSize = new System.Drawing.Size(459, 453);
+			this.ClientSize = new System.Drawing.Size(600, 453);
 			this.ControlBox = false;
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.treeView1);

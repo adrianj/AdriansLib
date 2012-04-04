@@ -40,6 +40,8 @@ namespace DTALib.Forms
 
 		private void SetToPreferredSize()
 		{
+			this.Size = new System.Drawing.Size(control.Width + 12, control.Height + 30);
+			
 			Size pref = control.PreferredSize;
 
 			if (pref.Height == 0 && pref.Width == 0)
@@ -53,7 +55,7 @@ namespace DTALib.Forms
 			if (buttons != ButtonOptions.None)
 				height += MinimumSize.Height;
 			this.MinimumSize = new Size(width+12, height+30);
-			this.Size = MinimumSize;
+			//this.Size = MinimumSize;
 		}
 
 		public SingleControlForm()

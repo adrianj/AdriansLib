@@ -493,6 +493,18 @@ namespace ComplexMath
             }
         }
 
+		public new void Invalidate()
+		{
+			if (this.InvokeRequired)
+			{
+				VoidCallback d = new VoidCallback(Invalidate);
+				this.Invoke(d);
+			}
+			else
+			{
+				base.Invalidate();
+			}
+		}
         public static SimplePlot GetPlotFromControl(Control con)
         {
 			foreach (Control c in con.Controls)
